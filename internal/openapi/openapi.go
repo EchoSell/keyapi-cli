@@ -11,7 +11,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/keyapi-ai/keyapi-cli/internal/config"
+	"github.com/EchoSell/keyapi-cli/internal/config"
 )
 
 const DefaultIndexURL = "https://docs.keyapi.ai/llms.txt"

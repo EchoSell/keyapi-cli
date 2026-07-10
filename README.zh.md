@@ -2,7 +2,7 @@
 
 ---
 
-[中文版](https://github.com/EchoSell/KeyAPI-CLI/blob/main/README.zh.md) | [English](https://github.com/EchoSell/KeyAPI-CLI/blob/main/README.md)
+[中文版](https://github.com/EchoSell/keyapi-cli/blob/main/README.zh.md) | [English](https://github.com/EchoSell/keyapi-cli/blob/main/README.md)
 
 KeyAPI CLI 是一个轻量级命令行客户端，用于配置认证信息、发现可用 API 平台、查看接口描述和参数，并在不编写请求代码的情况下调用 API。
 
@@ -270,14 +270,12 @@ keyapi call tiktok/user/detail --query unique_id=mrbeast
 
 | 文件 | 作用 |
 | --- | --- |
-| [docs/index.md](https://github.com/EchoSell/KeyAPI-CLI/blob/main/docs/index.md) | 文档入口。 |
-| [docs/commands.md](https://github.com/EchoSell/KeyAPI-CLI/blob/main/docs/commands.md) | 完整命令参考。 |
-| [docs/config.md](https://github.com/EchoSell/KeyAPI-CLI/blob/main/docs/config.md) | 配置文件和环境变量说明。 |
-| [docs/reference/cli-spec.yaml](https://github.com/EchoSell/KeyAPI-CLI/blob/main/docs/reference/cli-spec.yaml) | 轻量机器可读 CLI 契约。 |
-| [README.zh.md](https://github.com/EchoSell/KeyAPI-CLI/blob/main/README.zh.md) | 中文 README。 |
-| [docs/zh/index.md](https://github.com/EchoSell/KeyAPI-CLI/blob/main/docs/zh/index.md) | 中文文档入口。 |
-| [AGENTS.md](https://github.com/EchoSell/KeyAPI-CLI/blob/main/AGENTS.md) | 面向工具化使用的命令指南。 |
-| [skills/keyapi-cli/SKILL.md](https://github.com/EchoSell/KeyAPI-CLI/blob/main/skills/keyapi-cli/SKILL.md) | Skill 风格的命令说明。 |
+| [docs/index.md](https://github.com/EchoSell/keyapi-cli/blob/main/docs/index.md) | 文档入口。 |
+| [docs/commands.md](https://github.com/EchoSell/keyapi-cli/blob/main/docs/commands.md) | 完整命令参考。 |
+| [docs/config.md](https://github.com/EchoSell/keyapi-cli/blob/main/docs/config.md) | 配置文件和环境变量说明。 |
+| [docs/reference/cli-spec.yaml](https://github.com/EchoSell/keyapi-cli/blob/main/docs/reference/cli-spec.yaml) | 轻量机器可读 CLI 契约。 |
+| [README.zh.md](https://github.com/EchoSell/keyapi-cli/blob/main/README.zh.md) | 中文 README。 |
+| [docs/zh/index.md](https://github.com/EchoSell/keyapi-cli/blob/main/docs/zh/index.md) | 中文文档入口。 |
 
 ## 开发
 

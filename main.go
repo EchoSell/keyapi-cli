@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/keyapi-ai/keyapi-cli/internal/cli"
+	"github.com/EchoSell/keyapi-cli/internal/cli"
 )
 
 func main() {

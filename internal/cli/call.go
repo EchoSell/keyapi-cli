@@ -12,7 +12,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/keyapi-ai/keyapi-cli/internal/config"
+	"github.com/EchoSell/keyapi-cli/internal/config"
 )
 
 func runCall(args []string) error {

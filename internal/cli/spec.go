@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/keyapi-ai/keyapi-cli/internal/openapi"
+	"github.com/EchoSell/keyapi-cli/internal/openapi"
 )
 
 func runSpec(args []string) error {

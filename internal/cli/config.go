@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/keyapi-ai/keyapi-cli/internal/config"
+	"github.com/EchoSell/keyapi-cli/internal/config"
 )
 
 func runConfig(args []string) error {

@@ -1,7 +1,7 @@
 ﻿# KeyAPI CLI
 
 ---
-[中文版](https://github.com/EchoSell/KeyAPI-CLI/blob/main/README.zh.md) | [English](https://github.com/EchoSell/KeyAPI-CLI/blob/main/README.md)
+[中文版](https://github.com/EchoSell/keyapi-cli/blob/main/README.zh.md) | [English](https://github.com/EchoSell/keyapi-cli/blob/main/README.md)
 
 KeyAPI CLI is a lightweight command line client for the [KeyAPI](https://keyapi.ai) platform. It helps configure authentication, discover available API platforms, inspect endpoint descriptions and parameters, and call APIs without writing request code.
 
@@ -247,14 +247,12 @@ Workflow rules:
 
 | File | Purpose |
 | --- | --- |
-| [docs/index.md](https://github.com/EchoSell/KeyAPI-CLI/blob/main/docs/index.md) | Documentation entry point. |
-| [docs/commands.md](https://github.com/EchoSell/KeyAPI-CLI/blob/main/docs/commands.md) | Full command and parameter reference. |
-| [docs/config.md](https://github.com/EchoSell/KeyAPI-CLI/blob/main/docs/config.md) | Config file and environment variables. |
-| [docs/reference/cli-spec.yaml](https://github.com/EchoSell/KeyAPI-CLI/blob/main/docs/reference/cli-spec.yaml) | Lightweight machine-readable CLI contract. |
-| [README.zh.md](https://github.com/EchoSell/KeyAPI-CLI/blob/main/README.zh.md) | Chinese README. |
-| [docs/zh/index.md](https://github.com/EchoSell/KeyAPI-CLI/blob/main/docs/zh/index.md) | Chinese documentation entry point. |
-| [AGENTS.md](https://github.com/EchoSell/KeyAPI-CLI/blob/main/AGENTS.md) | Operational command guide for tool-based use. |
-| [skills/keyapi-cli/SKILL.md](https://github.com/EchoSell/KeyAPI-CLI/blob/main/skills/keyapi-cli/SKILL.md) | Skill-style command instructions. |
+| [docs/index.md](https://github.com/EchoSell/keyapi-cli/blob/main/docs/index.md) | Documentation entry point. |
+| [docs/commands.md](https://github.com/EchoSell/keyapi-cli/blob/main/docs/commands.md) | Full command and parameter reference. |
+| [docs/config.md](https://github.com/EchoSell/keyapi-cli/blob/main/docs/config.md) | Config file and environment variables. |
+| [docs/reference/cli-spec.yaml](https://github.com/EchoSell/keyapi-cli/blob/main/docs/reference/cli-spec.yaml) | Lightweight machine-readable CLI contract. |
+| [README.zh.md](https://github.com/EchoSell/keyapi-cli/blob/main/README.zh.md) | Chinese README. |
+| [docs/zh/index.md](https://github.com/EchoSell/keyapi-cli/blob/main/docs/zh/index.md) | Chinese documentation entry point. |
 
 ## Development
 
