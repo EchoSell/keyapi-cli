@@ -39,7 +39,6 @@ Notes:
 - `base_url` defaults to `https://api.keyapi.ai`.
 - `auth_scheme` defaults to `Bearer`.
 - `language` defaults to `en`.
-- The CLI does not expose a command for changing `base_url`.
 
 ## Environment Variables
 
@@ -48,18 +47,7 @@ Notes:
 | `KEYAPI_API_KEY` | KeyAPI token. Overrides the token stored in config. | Highest for API token |
 | `KEYAPI_HOME` | Config directory. | Highest for config location |
 
-## OpenAPI Loading
 
-OpenAPI files are no longer cached locally.
-
-When a `spec` command runs, the CLI:
-
-1. Fetches `https://docs.keyapi.ai/llms.txt`.
-2. Parses OpenAPI JSON links from the `## OpenAPI Specs` section.
-3. Selects links for the configured language.
-4. Fetches the selected OpenAPI JSON directly.
-
-`keyapi call` does not load OpenAPI docs.
 
 ## Managing Token
 

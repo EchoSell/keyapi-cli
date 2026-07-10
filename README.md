@@ -1,14 +1,18 @@
-# KeyAPI CLI
+﻿# KeyAPI CLI
+
+---
+[中文版](https://github.com/EchoSell/KeyAPI-CLI/blob/main/README.zh.md) | [English](https://github.com/EchoSell/KeyAPI-CLI/blob/main/README.md)
 
 KeyAPI CLI is a lightweight command line client for the [KeyAPI](https://keyapi.ai) platform. It helps configure authentication, discover available API platforms, inspect endpoint descriptions and parameters, and call APIs without writing request code.
 
-The CLI keeps the executable simple:
+The CLI focuses on the core workflow users need:
 
 - one command group for configuration
 - one command group for API discovery
 - one command for API execution
-- live OpenAPI loading from the official docs index
 - JSON output by default for `spec` and `call`
+
+The CLI always fetches the latest KeyAPI OpenAPI specification and provides up-to-date endpoint details, allowing you to review request methods, parameters, and capabilities before making API calls.
 
 ## Installation
 
@@ -189,32 +193,28 @@ Dry run:
 keyapi call google/search --query q=openai --dry-run
 ```
 
-Default response format is a JSON envelope:
+By default, `keyapi call` prints the original response returned by the KeyAPI endpoint. The CLI does not wrap or rewrite the API response.
 
 ```json
 {
-  "ok": true,
-  "endpoint": "/v1/google/search",
-  "method": "GET",
+  "code": 0,
+  "message": "success",
   "data": {}
 }
 ```
 
-## OpenAPI Loading
+Common KeyAPI response codes:
 
-The CLI always reads the latest index from:
+| Code | Message | Meaning |
+| --- | --- | --- |
+| `0` | `success` | Request succeeded. |
+| `400` | `Missing required parameter: <name>` | A required parameter is missing or invalid. |
+| `401` | `apiKey is null` | API key is missing. |
+| `402` | `apiKey quota is not enough` | API key quota is insufficient. |
+| `429` | `qps limit exceeded` | Request rate exceeded the QPS limit. |
+| `500` | `Internal server error` | Server-side error. |
 
-```text
-https://docs.keyapi.ai/llms.txt
-```
-
-Behavior:
-
-- `llms.txt` is fetched when `spec` commands run.
-- OpenAPI spec URLs are parsed from the `## OpenAPI Specs` section.
-- The selected OpenAPI JSON file is fetched directly from the docs site.
-- The endpoint description is built from the latest fetched OpenAPI JSON.
-- `keyapi call` does not load OpenAPI docs.
+These status codes and fields are defined by KeyAPI endpoints. The CLI keeps them unchanged.
 
 ## Usage Workflow
 
@@ -236,22 +236,25 @@ keyapi call tiktok/influencer/detail --query unique_id=mrbeast
 
 Workflow rules:
 
-- Do not guess endpoint paths if `list-endpoints` can be used.
-- Do not guess parameter names before running `get-endpoint`.
-- Select endpoints by reading `summary` and `description`.
-- Use `--dry-run` before execution when parameters are uncertain.
+- Choose endpoints by reading `method`, `path`, `summary`, and `description`.
+- Inspect `parameters` and `body_fields` before constructing a request.
+- Use `--query` for query parameters.
+- Use `--data` or `--body-json` for JSON request bodies.
+- Use `--dry-run` before execution when request construction is uncertain.
 - Use `docs/reference/cli-spec.yaml` as the lightweight machine-readable command contract when integrating the CLI into other tools.
 
 ## Documentation
 
-| File | Audience | Purpose |
-| --- | --- | --- |
-| [docs/index.md](docs/index.md) | Documentation entry point. |
-| [docs/commands.md](docs/commands.md) | Full command and parameter reference. |
-| [docs/config.md](docs/config.md) | Config file and environment variables. |
-| [docs/reference/cli-spec.yaml](docs/reference/cli-spec.yaml) | Lightweight machine-readable CLI contract. |
-| [AGENTS.md](AGENTS.md) | Operational command guide for tool-based use. |
-| [skills/keyapi-cli/SKILL.md](skills/keyapi-cli/SKILL.md) | Skill-style command instructions. |
+| File | Purpose |
+| --- | --- |
+| [docs/index.md](https://github.com/EchoSell/KeyAPI-CLI/blob/main/docs/index.md) | Documentation entry point. |
+| [docs/commands.md](https://github.com/EchoSell/KeyAPI-CLI/blob/main/docs/commands.md) | Full command and parameter reference. |
+| [docs/config.md](https://github.com/EchoSell/KeyAPI-CLI/blob/main/docs/config.md) | Config file and environment variables. |
+| [docs/reference/cli-spec.yaml](https://github.com/EchoSell/KeyAPI-CLI/blob/main/docs/reference/cli-spec.yaml) | Lightweight machine-readable CLI contract. |
+| [README.zh.md](https://github.com/EchoSell/KeyAPI-CLI/blob/main/README.zh.md) | Chinese README. |
+| [docs/zh/index.md](https://github.com/EchoSell/KeyAPI-CLI/blob/main/docs/zh/index.md) | Chinese documentation entry point. |
+| [AGENTS.md](https://github.com/EchoSell/KeyAPI-CLI/blob/main/AGENTS.md) | Operational command guide for tool-based use. |
+| [skills/keyapi-cli/SKILL.md](https://github.com/EchoSell/KeyAPI-CLI/blob/main/skills/keyapi-cli/SKILL.md) | Skill-style command instructions. |
 
 ## Development
 

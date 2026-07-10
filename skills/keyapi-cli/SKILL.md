@@ -78,6 +78,8 @@ Each item in `parameters` preserves the original OpenAPI `schema` field when pre
 keyapi call <endpoint-or-path> [flags]
 ```
 
+The command prints the original KeyAPI endpoint response. The response fields such as `code`, `message`, and `data` are defined by KeyAPI and are not wrapped by the CLI.
+
 Common flags:
 
 - `--query k=v`: URL query parameter. Repeatable.

@@ -1,12 +1,5 @@
 package cli
 
-type apiResult struct {
-	OK       bool        `json:"ok"`
-	Endpoint string      `json:"endpoint,omitempty"`
-	Method   string      `json:"method,omitempty"`
-	Data     interface{} `json:"data,omitempty"`
-}
-
 type dryRunRequest struct {
 	Method  string            `json:"method"`
 	URL     string            `json:"url"`

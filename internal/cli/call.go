@@ -139,31 +139,12 @@ func runCall(args []string) error {
 	if err != nil {
 		return err
 	}
-	if resp.StatusCode < 200 || resp.StatusCode >= 300 {
-		return fmt.Errorf("request failed with %s: %s", resp.Status, strings.TrimSpace(string(raw)))
-	}
 
 	if *format == "raw" {
 		fmt.Println(string(raw))
 		return nil
 	}
-	if *format == "json" {
-		var data interface{}
-		if json.Valid(raw) {
-			if err := json.Unmarshal(raw, &data); err != nil {
-				return err
-			}
-		} else {
-			data = string(raw)
-		}
-		return printJSON(apiResult{
-			OK:       true,
-			Endpoint: path,
-			Method:   strings.ToUpper(*method),
-			Data:     data,
-		})
-	}
-	if *format != "pretty" {
+	if *format != "json" && *format != "pretty" {
 		return fmt.Errorf("unsupported format %q; use pretty, raw, or json", *format)
 	}
 

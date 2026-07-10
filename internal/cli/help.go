@@ -149,5 +149,5 @@ Parameters:
   --format: json, pretty, or raw. Default is json.
 
 Output:
-  JSON envelope by default, formatted raw API JSON with --format pretty, raw response with --format raw.`)
+  Original KeyAPI response JSON by default, formatted JSON with --format pretty, raw response with --format raw.`)
 }

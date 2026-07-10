@@ -184,4 +184,4 @@ commands:
         default: "json"
         values: ["json", "pretty", "raw"]
         description: "Response output format."
-    output: "json_by_default"
+    output: "original_api_response_json_by_default"

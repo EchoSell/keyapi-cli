@@ -18,7 +18,7 @@ KeyAPI CLI is a small command line tool for configuring a KeyAPI token, discover
 | --- | --- |
 | [commands.md](commands.md) | Full command reference with arguments, flags, return values, and JSON field meanings. |
 | [config.md](config.md) | Configuration file and environment variables. |
-| [commands-local-zh.md](commands-local-zh.md) | Chinese local command guide. |
+| [commands.zh.md](commands.zh.md) | Chinese command guide. |
 | [reference/cli-spec.yaml](reference/cli-spec.yaml) | Lightweight machine-readable command contract. |
 
 ## Recommended Workflow
@@ -41,3 +41,9 @@ To choose an endpoint, list endpoint descriptions for the target platform and co
 - `description`
 
 After selecting an endpoint, run `get-endpoint` and use its `parameters` and `body_fields` to construct the request.
+
+Request construction rules:
+
+- Use `--query` for query parameters.
+- Use `--data` or `--body-json` for JSON request bodies.
+- Use `--dry-run` before execution when request construction is uncertain.

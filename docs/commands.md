@@ -37,7 +37,7 @@ This document lists the current KeyAPI CLI commands, arguments, flags, and JSON 
 
 `spec` commands return JSON by default.
 
-The CLI always fetches the latest `https://docs.keyapi.ai/llms.txt`, parses OpenAPI links from its `## OpenAPI Specs` section, and fetches the selected OpenAPI JSON directly.
+The CLI reads the latest KeyAPI OpenAPI documentation each time and returns real-time API details.
 
 | Command | Description | Required Arguments | Flags | Output |
 | --- | --- | --- | --- | --- |
@@ -189,23 +189,36 @@ https://api.keyapi.ai/v1/google/search
 | `--dry-run` | No | No | Print the final request as JSON without sending it. |
 | `--format json\|pretty\|raw` | No | No | Select response output format. Default is `json`. |
 
-Default JSON response envelope:
+Default output:
+
+`keyapi call` prints the original response returned by the KeyAPI endpoint. The CLI does not add an extra wrapper around the API response.
 
 ```json
 {
-  "ok": true,
-  "endpoint": "/v1/google/search",
-  "method": "GET",
+  "code": 0,
+  "message": "success",
   "data": {}
 }
 ```
 
 | Field | Meaning |
 | --- | --- |
-| `ok` | Whether the CLI request succeeded. |
-| `endpoint` | Resolved KeyAPI endpoint path. |
-| `method` | HTTP method used by the request. |
-| `data` | Parsed API response body, or raw text when the response is not JSON. |
+| `code` | KeyAPI endpoint status code. `0` means success. |
+| `message` | KeyAPI endpoint status message. |
+| `data` | KeyAPI endpoint response data. |
+
+Common KeyAPI response codes:
+
+| Code | Message | Meaning |
+| --- | --- | --- |
+| `0` | `success` | Request succeeded. |
+| `400` | `Missing required parameter: <name>` | A required parameter is missing or invalid. |
+| `401` | `apiKey is null` | API key is missing. |
+| `402` | `apiKey quota is not enough` | API key quota is insufficient. |
+| `429` | `qps limit exceeded` | Request rate exceeded the QPS limit. |
+| `500` | `Internal server error` | Server-side error. |
+
+These fields and status codes are returned by KeyAPI itself. The CLI keeps them consistent with the API response.
 
 ## Endpoint Selection Guidance
 
@@ -218,3 +231,11 @@ Choose the endpoint whose description best matches the user request.
 Inspect that endpoint with get-endpoint.
 Use parameters and body_fields to construct the call command.
 ```
+
+Selection rules:
+
+- Choose endpoints by reading `method`, `path`, `summary`, and `description`.
+- Inspect `parameters` and `body_fields` before constructing a request.
+- Use `--query` for query parameters.
+- Use `--data` or `--body-json` for JSON request bodies.
+- Use `--dry-run` before execution when request construction is uncertain.
