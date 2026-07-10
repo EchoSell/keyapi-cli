@@ -276,17 +276,3 @@ keyapi call tiktok/user/detail --query unique_id=mrbeast
 | [docs/reference/cli-spec.yaml](https://github.com/EchoSell/keyapi-cli/blob/main/docs/reference/cli-spec.yaml) | 轻量机器可读 CLI 契约。 |
 | [README.zh.md](https://github.com/EchoSell/keyapi-cli/blob/main/README.zh.md) | 中文 README。 |
 | [docs/zh/index.md](https://github.com/EchoSell/keyapi-cli/blob/main/docs/zh/index.md) | 中文文档入口。 |
-
-## 开发
-
-运行测试：
-
-```powershell
-go test ./...
-```
-
-构建：
-
-```powershell
-go build -buildvcs=false -o keyapi.exe .
-```

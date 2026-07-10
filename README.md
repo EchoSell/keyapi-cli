@@ -253,17 +253,3 @@ Workflow rules:
 | [docs/reference/cli-spec.yaml](https://github.com/EchoSell/keyapi-cli/blob/main/docs/reference/cli-spec.yaml) | Lightweight machine-readable CLI contract. |
 | [README.zh.md](https://github.com/EchoSell/keyapi-cli/blob/main/README.zh.md) | Chinese README. |
 | [docs/zh/index.md](https://github.com/EchoSell/keyapi-cli/blob/main/docs/zh/index.md) | Chinese documentation entry point. |
-
-## Development
-
-Run tests:
-
-```powershell
-go test ./...
-```
-
-Build:
-
-```powershell
-go build -buildvcs=false -o keyapi.exe .
-```
