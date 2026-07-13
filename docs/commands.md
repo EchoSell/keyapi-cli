@@ -171,18 +171,18 @@ Endpoint formats:
 
 ```text
 google/search
-/v1/google/search
-https://api.keyapi.ai/v1/google/search
+/v1/google/search?q=openai&gl=us
+https://api.keyapi.ai/v1/google/search?q=openai&gl=us
 ```
 
 ### `call` Flags
 
 | Flag | Required | Repeatable | Description |
 | --- | --- | --- | --- |
-| `--query k=v` | No | Yes | Add a URL query parameter. |
-| `--qparam k=v` | No | Yes | Alias for `--query`. |
-| `--data k=v` | No | Yes | Add a JSON body field. Values are sent as strings. |
-| `--body-json <json>` | No | No | Send a raw JSON request body. Use this for nested objects or arrays. |
+| `--query "k=v"` | No | Yes | Add or append a URL query parameter. Always quote the full `k=v` value. |
+| `--qparam "k=v"` | No | Yes | Alias for `--query`. Useful when query parameters are appended separately from the endpoint path. Always quote the full `k=v` value. |
+| `--body-raw <text>` | No | No | Send a raw text request body with `Content-Type: text/plain; charset=utf-8`. |
+| `--body-json <json>` | No | No | Send a JSON request body with `Content-Type: application/json`. The value must be valid JSON. |
 | `--method <method>` | No | No | Override HTTP method. If omitted, `POST` is used when body data exists; otherwise `GET` is used. |
 | `--api-key <value>` | No | No | Use a token for this command only. Overrides config and environment. |
 | `--token <value>` | No | No | Alias for `--api-key`. |
@@ -220,6 +220,23 @@ Common KeyAPI response codes:
 
 These fields and status codes are returned by KeyAPI itself. The CLI keeps them consistent with the API response.
 
+For GET endpoints, prefer putting query parameters directly in the endpoint path:
+
+```powershell
+keyapi call "/v1/google/search?q=openai&gl=us&page=1"
+```
+
+`--qparam` and `--query` are also supported and can be mixed with inline query parameters:
+
+```powershell
+keyapi call "/v1/google/search?q=openai" --qparam "gl=us" --qparam "page=1"
+```
+
+HTTP status handling:
+
+- HTTP `2xx` responses print the KeyAPI response and exit with code `0`.
+- HTTP non-`2xx` responses still print the KeyAPI response, then exit with a non-zero code so scripts and CI can detect failures.
+
 ## Endpoint Selection Guidance
 
 Use this process to choose an endpoint:
@@ -236,6 +253,8 @@ Selection rules:
 
 - Choose endpoints by reading `method`, `path`, `summary`, and `description`.
 - Inspect `parameters` and `body_fields` before constructing a request.
-- Use `--query` for query parameters.
-- Use `--data` or `--body-json` for JSON request bodies.
+- For GET endpoints, put query parameters in the endpoint path.
+- Use `--qparam "k=v"` or `--query "k=v"` when query parameters need to be appended separately.
+- Use `--body-json` for JSON request bodies.
+- Use `--body-raw` for raw text request bodies.
 - Use `--dry-run` before execution when request construction is uncertain.

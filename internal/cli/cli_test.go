@@ -1,11 +1,29 @@
 package cli
 
-import "testing"
+import (
+	"encoding/json"
+	"io"
+	"net/http"
+	"net/http/httptest"
+	"os"
+	"path/filepath"
+	"testing"
+)
 
 func TestResolveEndpointDoesNotNeedOpenAPI(t *testing.T) {
 	path, method := resolveEndpoint("google/search")
 	if path != "/v1/google/search" {
 		t.Fatalf("expected /v1/google/search, got %q", path)
+	}
+	if method != "" {
+		t.Fatalf("expected empty inferred method, got %q", method)
+	}
+}
+
+func TestResolveEndpointPreservesInlineQuery(t *testing.T) {
+	path, method := resolveEndpoint("/v1/google/search?deal_id=a2c250a5&country=us")
+	if path != "/v1/google/search?deal_id=a2c250a5&country=us" {
+		t.Fatalf("expected inline query to be preserved, got %q", path)
 	}
 	if method != "" {
 		t.Fatalf("expected empty inferred method, got %q", method)
@@ -33,4 +51,112 @@ func TestSplitKV(t *testing.T) {
 	if k != "q" || v != "openai" {
 		t.Fatalf("expected q/openai, got %q/%q", k, v)
 	}
+}
+
+func TestCallRejectsInvalidBodyJSON(t *testing.T) {
+	t.Setenv("KEYAPI_API_KEY", "sk_test")
+
+	err := runCall([]string{"google/search", "--body-json", `{"keyword":`})
+	if err == nil {
+		t.Fatal("expected invalid --body-json error")
+	}
+}
+
+func TestCallRejectsBodyRawAndBodyJSONTogether(t *testing.T) {
+	t.Setenv("KEYAPI_API_KEY", "sk_test")
+
+	err := runCall([]string{"google/search", "--body-raw", "plain text", "--body-json", `{"keyword":"openai"}`})
+	if err == nil {
+		t.Fatal("expected --body-raw and --body-json conflict error")
+	}
+}
+
+func TestCallBodyJSONUsesJSONContentType(t *testing.T) {
+	server := newCallTestServer(t, func(r *http.Request, body string) {
+		if got := r.Header.Get("Content-Type"); got != "application/json" {
+			t.Fatalf("expected application/json content type, got %q", got)
+		}
+		if body != `{"timeRange":7,"countryCode":"US","page":1,"limit":100}` {
+			t.Fatalf("unexpected body %q", body)
+		}
+	})
+	defer server.Close()
+
+	writeCallTestConfig(t, server.URL)
+
+	err := runCall([]string{"google/search", "--body-json", `{"timeRange":7,"countryCode":"US","page":1,"limit":100}`})
+	if err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestCallBodyRawAlwaysUsesTextContentType(t *testing.T) {
+	server := newCallTestServer(t, func(r *http.Request, body string) {
+		if got := r.Header.Get("Content-Type"); got != "text/plain; charset=utf-8" {
+			t.Fatalf("expected text/plain content type, got %q", got)
+		}
+		if body != `{"q":"openai"}` {
+			t.Fatalf("unexpected body %q", body)
+		}
+	})
+	defer server.Close()
+
+	writeCallTestConfig(t, server.URL)
+
+	err := runCall([]string{"google/search", "--body-raw", `{"q":"openai"}`})
+	if err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestCallReturnsErrorForNon2xxHTTPStatus(t *testing.T) {
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(http.StatusUnauthorized)
+		_, _ = w.Write([]byte(`{"code":401,"message":"apiKey is null","data":null}`))
+	}))
+	defer server.Close()
+
+	writeCallTestConfig(t, server.URL)
+
+	err := runCall([]string{"google/search"})
+	if err == nil {
+		t.Fatal("expected non-2xx HTTP status error")
+	}
+	statusErr, ok := err.(httpStatusError)
+	if !ok {
+		t.Fatalf("expected httpStatusError, got %T: %v", err, err)
+	}
+	if statusErr.StatusCode != http.StatusUnauthorized {
+		t.Fatalf("expected status %d, got %d", http.StatusUnauthorized, statusErr.StatusCode)
+	}
+}
+
+func newCallTestServer(t *testing.T, assert func(r *http.Request, body string)) *httptest.Server {
+	t.Helper()
+	return httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		raw, err := io.ReadAll(r.Body)
+		if err != nil {
+			t.Fatal(err)
+		}
+		assert(r, string(raw))
+		w.WriteHeader(http.StatusOK)
+		_, _ = w.Write([]byte(`{"code":0,"message":"success","data":{}}`))
+	}))
+}
+
+func writeCallTestConfig(t *testing.T, baseURL string) {
+	t.Helper()
+
+	home := t.TempDir()
+	t.Setenv("KEYAPI_HOME", home)
+	t.Setenv("KEYAPI_API_KEY", "")
+	raw := []byte(`{"api_key":"sk_test","base_url":` + strconvQuote(baseURL) + `,"auth_scheme":"Bearer","language":"en"}`)
+	if err := os.WriteFile(filepath.Join(home, "config.json"), raw, 0o600); err != nil {
+		t.Fatal(err)
+	}
+}
+
+func strconvQuote(value string) string {
+	raw, _ := json.Marshal(value)
+	return string(raw)
 }

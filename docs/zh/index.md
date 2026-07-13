@@ -27,7 +27,7 @@ keyapi config set token sk_xxx
 keyapi spec list-platforms
 keyapi spec list-endpoints google
 keyapi spec get-endpoint google/search
-keyapi call google/search --query q=openai
+keyapi call "/v1/google/search?q=openai"
 ```
 
 ## 接口选择说明
@@ -43,6 +43,8 @@ keyapi call google/search --query q=openai
 
 请求构造规则：
 
-- query 参数使用 `--query`。
-- JSON 请求体使用 `--data` 或 `--body-json`。
+- GET 接口优先把 query 参数写在接口路径里。
+- 需要单独追加 query 参数时，使用 `--qparam "k=v"` 或 `--query "k=v"`。
+- JSON 请求体使用 `--body-json`。
+- 原始文本请求体使用 `--body-raw`。
 - 不确定请求是否正确时，先使用 `--dry-run`。

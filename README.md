@@ -51,7 +51,7 @@ go build -buildvcs=false -o keyapi .
 .\keyapi.exe spec list-platforms
 .\keyapi.exe spec list-endpoints google
 .\keyapi.exe spec get-endpoint google/search
-.\keyapi.exe call google/search --query q=openai --query gl=us --query hl=en
+.\keyapi.exe call "/v1/google/search?q=openai&gl=us&hl=en"
 ```
 
 ## Core Commands
@@ -92,7 +92,7 @@ Example:
 ```powershell
 keyapi spec list-endpoints tiktok
 keyapi spec get-endpoint tiktok/influencer/detail
-keyapi call tiktok/influencer/detail --query unique_id=mrbeast
+keyapi call "/v1/tiktok/influencer/detail?unique_id=mrbeast"
 ```
 
 ## JSON Output
@@ -165,32 +165,41 @@ Endpoint formats:
 
 ```powershell
 keyapi call google/search
-keyapi call /v1/google/search
-keyapi call https://api.keyapi.ai/v1/google/search
+keyapi call "/v1/google/search?q=openai&gl=us"
+keyapi call "https://api.keyapi.ai/v1/google/search?q=openai&gl=us"
 ```
 
 Query parameters:
 
 ```powershell
-keyapi call google/search --query q=openai --query gl=us
+keyapi call "/v1/google/search?q=openai&gl=us"
+keyapi call "/v1/tiktok/shop/product-search?keyword=hot%20sales&region=US"
+keyapi call /v1/google/search --qparam "q=openai" --qparam "gl=us"
 ```
 
-JSON body fields:
+For GET endpoints, prefer putting query parameters directly in the endpoint path. Use `--qparam "k=v"` or `--query "k=v"` when parameters are easier to append programmatically.
+
+Raw text body:
 
 ```powershell
-keyapi call tiktok/shop/product-search --data keyword=dress --data region=US
+keyapi call some/text/endpoint --body-raw 'plain text body'
 ```
 
-Raw JSON body:
+`--body-raw` sends the body exactly as provided with `Content-Type: text/plain; charset=utf-8`.
+
+JSON body:
 
 ```powershell
 keyapi call tiktok/shop/product-search --body-json "{\"keyword\":\"dress\",\"region\":\"US\"}"
+keyapi call tiktok/shop/product-search --body-json '{"timeRange":7,"countryCode":"US","page":1,"limit":100}'
 ```
+
+`--body-json` must be valid JSON and is sent with `Content-Type: application/json`. Invalid JSON fails before the request is sent.
 
 Dry run:
 
 ```powershell
-keyapi call google/search --query q=openai --dry-run
+keyapi call "/v1/google/search?q=openai" --dry-run
 ```
 
 By default, `keyapi call` prints the original response returned by the KeyAPI endpoint. The CLI does not wrap or rewrite the API response.
@@ -216,6 +225,8 @@ Common KeyAPI response codes:
 
 These status codes and fields are defined by KeyAPI endpoints. The CLI keeps them unchanged.
 
+For HTTP status handling, `2xx` responses exit with code `0`. HTTP non-`2xx` responses still print the KeyAPI response, then exit with a non-zero code so scripts and CI can detect failures.
+
 ## Usage Workflow
 
 Recommended workflow:
@@ -230,16 +241,18 @@ Example:
 keyapi spec list-platforms
 keyapi spec list-endpoints tiktok
 keyapi spec get-endpoint tiktok/influencer/detail
-keyapi call tiktok/influencer/detail --query unique_id=mrbeast --dry-run
-keyapi call tiktok/influencer/detail --query unique_id=mrbeast
+keyapi call "/v1/tiktok/influencer/detail?unique_id=mrbeast" --dry-run
+keyapi call "/v1/tiktok/influencer/detail?unique_id=mrbeast"
 ```
 
 Workflow rules:
 
 - Choose endpoints by reading `method`, `path`, `summary`, and `description`.
 - Inspect `parameters` and `body_fields` before constructing a request.
-- Use `--query` for query parameters.
-- Use `--data` or `--body-json` for JSON request bodies.
+- For GET endpoints, put query parameters in the endpoint path, for example `"/v1/google/search?q=openai&gl=us"`.
+- Use `--qparam "k=v"` or `--query "k=v"` when query parameters need to be appended separately.
+- Use `--body-json` for JSON request bodies.
+- Use `--body-raw` for raw text request bodies.
 - Use `--dry-run` before execution when request construction is uncertain.
 - Use `docs/reference/cli-spec.yaml` as the lightweight machine-readable command contract when integrating the CLI into other tools.
 

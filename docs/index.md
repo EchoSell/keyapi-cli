@@ -28,7 +28,7 @@ keyapi config set token sk_xxx
 keyapi spec list-platforms
 keyapi spec list-endpoints google
 keyapi spec get-endpoint google/search
-keyapi call google/search --query q=openai
+keyapi call "/v1/google/search?q=openai"
 ```
 
 ## Endpoint Selection Guidance
@@ -44,6 +44,8 @@ After selecting an endpoint, run `get-endpoint` and use its `parameters` and `bo
 
 Request construction rules:
 
-- Use `--query` for query parameters.
-- Use `--data` or `--body-json` for JSON request bodies.
+- For GET endpoints, put query parameters in the endpoint path.
+- Use `--qparam "k=v"` or `--query "k=v"` when query parameters need to be appended separately.
+- Use `--body-json` for JSON request bodies.
+- Use `--body-raw` for raw text request bodies.
 - Use `--dry-run` before execution when request construction is uncertain.

@@ -171,18 +171,18 @@ keyapi spec get-endpoint google/search --format pretty
 
 ```text
 google/search
-/v1/google/search
-https://api.keyapi.ai/v1/google/search
+/v1/google/search?q=openai&gl=us
+https://api.keyapi.ai/v1/google/search?q=openai&gl=us
 ```
 
 ### `call` Flags
 
 | Flag | 必填 | 可重复 | 说明 |
 | --- | --- | --- | --- |
-| `--query k=v` | 否 | 是 | 添加 URL query 参数。 |
-| `--qparam k=v` | 否 | 是 | `--query` 的别名。 |
-| `--data k=v` | 否 | 是 | 添加 JSON body 字段，值会按字符串发送。 |
-| `--body-json <json>` | 否 | 否 | 发送完整 JSON 请求体，适合嵌套对象或数组。 |
+| `--query "k=v"` | 否 | 是 | 添加或追加 URL query 参数。完整的 `k=v` 都需要加引号。 |
+| `--qparam "k=v"` | 否 | 是 | `--query` 的别名。适合在接口路径之外单独追加 query 参数。完整的 `k=v` 都需要加引号。 |
+| `--body-raw <text>` | 否 | 否 | 发送原始文本请求体，使用 `Content-Type: text/plain; charset=utf-8`。 |
+| `--body-json <json>` | 否 | 否 | 发送 JSON 请求体，使用 `Content-Type: application/json`，必须是合法 JSON。 |
 | `--method <method>` | 否 | 否 | 覆盖 HTTP 方法。未指定时，有 body 默认为 `POST`，否则为 `GET`。 |
 | `--api-key <value>` | 否 | 否 | 仅当前命令使用的 API key，会覆盖配置和环境变量。 |
 | `--token <value>` | 否 | 否 | `--api-key` 的别名。 |
@@ -214,6 +214,23 @@ https://api.keyapi.ai/v1/google/search
 
 这些字段和状态码由 KeyAPI 接口定义，CLI 会保持原样输出。
 
+对于 GET 接口，推荐把 query 参数直接写在接口路径里：
+
+```powershell
+keyapi call "/v1/google/search?q=openai&gl=us&page=1"
+```
+
+同时也支持 `--qparam` 和 `--query`，并且可以和路径里的 query 参数混合使用：
+
+```powershell
+keyapi call "/v1/google/search?q=openai" --qparam "gl=us" --qparam "page=1"
+```
+
+HTTP 状态处理：
+
+- HTTP `2xx` 响应会输出 KeyAPI 响应，并以退出码 `0` 结束。
+- HTTP 非 `2xx` 响应仍会输出 KeyAPI 响应，然后返回非零退出码，方便脚本和 CI 判断失败。
+
 ## 接口选择说明
 
 使用以下流程选择接口：
@@ -230,6 +247,8 @@ https://api.keyapi.ai/v1/google/search
 
 - 通过 `method`、`path`、`summary`、`description` 选择接口。
 - 构造请求前先查看 `parameters` 和 `body_fields`。
-- query 参数使用 `--query`。
-- JSON body 使用 `--data` 或 `--body-json`。
+- GET 接口优先把 query 参数写在接口路径里。
+- 需要单独追加 query 参数时，使用 `--qparam "k=v"` 或 `--query "k=v"`。
+- JSON 请求体使用 `--body-json`。
+- 原始文本请求体使用 `--body-raw`。
 - 不确定请求是否正确时，先使用 `--dry-run`。

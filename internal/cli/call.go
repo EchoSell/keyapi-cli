@@ -27,15 +27,17 @@ func runCall(args []string) error {
 	apiKey := fs.String("api-key", "", "API key")
 	token := fs.String("token", "", "API token; alias for --api-key")
 	bodyJSON := fs.String("body-json", "", "raw JSON request body")
+	bodyRaw := fs.String("body-raw", "", "raw text request body")
 	format := fs.String("format", "json", "output format: json, pretty, or raw")
 	dryRun := fs.Bool("dry-run", false, "print the request without sending it")
 	var queries repeatedFlag
-	var data repeatedFlag
-	fs.Var(&queries, "query", "query parameter as k=v; may be repeated")
+	fs.Var(&queries, "query", "query parameter as \"k=v\"; may be repeated")
 	fs.Var(&queries, "qparam", "alias for --query")
-	fs.Var(&data, "data", "JSON body field as k=v; may be repeated")
 	if err := fs.Parse(args[1:]); err != nil {
 		return err
+	}
+	if *bodyJSON != "" && *bodyRaw != "" {
+		return errors.New("use either --body-raw or --body-json, not both")
 	}
 
 	cfg, err := config.Load()
@@ -54,7 +56,7 @@ func runCall(args []string) error {
 
 	path, inferredMethod := resolveEndpoint(endpoint)
 	if *method == "" {
-		if *bodyJSON != "" || len(data) > 0 {
+		if *bodyJSON != "" || *bodyRaw != "" {
 			*method = http.MethodPost
 		} else if inferredMethod != "" {
 			*method = inferredMethod
@@ -79,26 +81,17 @@ func runCall(args []string) error {
 
 	var body io.Reader
 	var bodyValue interface{}
+	contentType := ""
 	if *bodyJSON != "" {
+		if err := json.Unmarshal([]byte(*bodyJSON), &bodyValue); err != nil {
+			return fmt.Errorf("invalid --body-json: %w", err)
+		}
 		body = strings.NewReader(*bodyJSON)
-		if json.Unmarshal([]byte(*bodyJSON), &bodyValue) != nil {
-			bodyValue = *bodyJSON
-		}
-	} else if len(data) > 0 {
-		payload := map[string]string{}
-		for _, item := range data {
-			k, v, err := splitKV(item)
-			if err != nil {
-				return fmt.Errorf("invalid --data %q: %w", item, err)
-			}
-			payload[k] = v
-		}
-		raw, err := json.Marshal(payload)
-		if err != nil {
-			return err
-		}
-		body = bytes.NewReader(raw)
-		bodyValue = payload
+		contentType = "application/json"
+	} else if *bodyRaw != "" {
+		body = strings.NewReader(*bodyRaw)
+		bodyValue = *bodyRaw
+		contentType = "text/plain; charset=utf-8"
 	}
 
 	req, err := http.NewRequest(strings.ToUpper(*method), target.String(), body)
@@ -107,7 +100,7 @@ func runCall(args []string) error {
 	}
 	req.Header.Set("Accept", "application/json")
 	if body != nil {
-		req.Header.Set("Content-Type", "application/json")
+		req.Header.Set("Content-Type", contentType)
 	}
 	if strings.EqualFold(cfg.AuthScheme, "bearer") || cfg.AuthScheme == "" {
 		req.Header.Set("Authorization", "Bearer "+cfg.APIKey)
@@ -140,12 +133,22 @@ func runCall(args []string) error {
 		return err
 	}
 
-	if *format == "raw" {
+	if err := printResponse(raw, *format); err != nil {
+		return err
+	}
+	if resp.StatusCode < 200 || resp.StatusCode >= 300 {
+		return httpStatusError{StatusCode: resp.StatusCode, Status: resp.Status}
+	}
+	return nil
+}
+
+func printResponse(raw []byte, format string) error {
+	if format == "raw" {
 		fmt.Println(string(raw))
 		return nil
 	}
-	if *format != "json" && *format != "pretty" {
-		return fmt.Errorf("unsupported format %q; use pretty, raw, or json", *format)
+	if format != "json" && format != "pretty" {
+		return fmt.Errorf("unsupported format %q; use pretty, raw, or json", format)
 	}
 
 	var pretty bytes.Buffer
@@ -155,4 +158,13 @@ func runCall(args []string) error {
 	}
 	fmt.Println(string(raw))
 	return nil
+}
+
+type httpStatusError struct {
+	StatusCode int
+	Status     string
+}
+
+func (e httpStatusError) Error() string {
+	return fmt.Sprintf("request failed with HTTP status %s", e.Status)
 }

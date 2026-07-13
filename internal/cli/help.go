@@ -20,7 +20,7 @@ Core workflow:
   2. List platforms:     keyapi spec list-platforms
   3. List endpoints:     keyapi spec list-endpoints tiktok instagram
   4. Inspect endpoint:   keyapi spec get-endpoint tiktok/influencer/detail
-  5. Execute request:    keyapi call <endpoint> --query k=v
+  5. Execute request:    keyapi call "/v1/<platform>/<endpoint>?k=v"
 
 Environment:
   KEYAPI_API_KEY     API key, overrides config file
@@ -136,18 +136,19 @@ When to use:
   Use after endpoint details are known from spec get-endpoint.
 
 Usage:
-  keyapi call <endpoint-or-path> [--query k=v] [--data k=v] [--method GET] [--body-json JSON]
+  keyapi call <endpoint-or-path-with-query> [--qparam "k=v"] [--body-raw TEXT] [--method GET] [--body-json JSON]
 
 Parameters:
-  endpoint-or-path: google/search, /v1/google/search, or a full KeyAPI URL.
-  --query: URL query parameter as key=value. Repeatable.
+  endpoint-or-path-with-query: google/search, /v1/google/search?q=openai, or a full KeyAPI URL.
+  --query: Add or append a URL query parameter as "key=value". Repeatable.
   --qparam: alias for --query.
-  --data: JSON body field as key=value. Repeatable.
-  --body-json: Raw JSON request body.
+  --body-raw: Raw text request body. Sent as text/plain without JSON validation.
+  --body-json: JSON request body. Must be valid JSON and is sent as application/json.
   --method: HTTP method override.
   --dry-run: Print request JSON without sending.
   --format: json, pretty, or raw. Default is json.
 
 Output:
-  Original KeyAPI response JSON by default, formatted JSON with --format pretty, raw response with --format raw.`)
+  Original KeyAPI response JSON by default, formatted JSON with --format pretty, raw response with --format raw.
+  HTTP non-2xx responses are printed and return a non-zero exit code.`)
 }

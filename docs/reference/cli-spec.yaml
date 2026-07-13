@@ -136,32 +136,32 @@ commands:
 
   - name: "keyapi call"
     description: "Execute a KeyAPI endpoint request."
-    usage: "keyapi call <endpoint-or-path> [--query k=v] [--data k=v] [--body-json JSON] [--method METHOD] [--format json|pretty|raw] [--dry-run]"
+    usage: "keyapi call <endpoint-or-path-with-query> [--qparam \"k=v\"] [--body-raw TEXT] [--body-json JSON] [--method METHOD] [--format json|pretty|raw] [--dry-run]"
     required: ["endpoint_or_path"]
     parameters:
       - name: "endpoint_or_path"
         type: "string"
         required: true
-        description: "Endpoint alias, path, or full KeyAPI URL."
+        description: "Endpoint alias, path with query string, or full KeyAPI URL. Prefer inline query strings for GET endpoints, for example /v1/google/search?q=openai&gl=us."
       - name: "--query"
-        type: "key_value"
+        type: "quoted_key_value"
         required: false
         repeatable: true
-        description: "URL query parameter as k=v."
+        description: "Add or append a URL query parameter as quoted k=v."
       - name: "--qparam"
-        type: "key_value"
+        type: "quoted_key_value"
         required: false
         repeatable: true
-        description: "Alias for --query."
-      - name: "--data"
-        type: "key_value"
+        description: "Alias for --query. Useful when query parameters are appended separately from the endpoint path."
+      - name: "--body-raw"
+        type: "string"
         required: false
-        repeatable: true
-        description: "JSON body field as k=v. Values are sent as strings."
+        repeatable: false
+        description: "Raw text request body. Sent as text/plain without JSON validation."
       - name: "--body-json"
         type: "json"
         required: false
-        description: "Raw JSON request body."
+        description: "JSON request body. Must be valid JSON and is sent as application/json."
       - name: "--method"
         type: "string"
         required: false
@@ -184,4 +184,4 @@ commands:
         default: "json"
         values: ["json", "pretty", "raw"]
         description: "Response output format."
-    output: "original_api_response_json_by_default"
+    output: "original_api_response_json_by_default; HTTP non-2xx responses print the response and return a non-zero exit code"
