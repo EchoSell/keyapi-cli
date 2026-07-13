@@ -16,6 +16,10 @@ func runConfig(args []string) error {
 
 	switch args[0] {
 	case "show", "get":
+		if len(args) >= 2 && isHelp(args[1]) {
+			printConfigHelp()
+			return nil
+		}
 		cfg, err := config.Load()
 		if err != nil {
 			return err
@@ -47,7 +51,7 @@ func runConfig(args []string) error {
 			return nil
 		}
 		if len(args) != 3 {
-			return errors.New("usage: keyapi config set <token|api-key|auth-scheme|language> <value>")
+			return errors.New("usage: keyapi set <token|api-key|auth-scheme|language> <value>")
 		}
 		cfg, err := config.Load()
 		if err != nil {
@@ -73,8 +77,12 @@ func runConfig(args []string) error {
 		fmt.Println("saved")
 		return nil
 	case "clear":
+		if len(args) >= 2 && isHelp(args[1]) {
+			printConfigHelp()
+			return nil
+		}
 		if len(args) != 2 {
-			return errors.New("usage: keyapi config clear <token|api-key>")
+			return errors.New("usage: keyapi clear <token|api-key>")
 		}
 		cfg, err := config.Load()
 		if err != nil {

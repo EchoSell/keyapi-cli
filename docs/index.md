@@ -6,7 +6,10 @@ KeyAPI CLI is a small command line tool for configuring a KeyAPI token, discover
 
 | Command | Purpose |
 | --- | --- |
-| `keyapi config` | Manage local token and CLI settings. |
+| `keyapi set <key> <value>` | Save local token and CLI settings. |
+| `keyapi get <key>` | Read one local config value. |
+| `keyapi show` | Show current local config. |
+| `keyapi clear <key>` | Clear one local config value. |
 | `keyapi spec list-platforms` | List platforms with available KeyAPI endpoints. |
 | `keyapi spec list-endpoints <platform...\|all>` | List endpoint descriptions for one or more platforms. |
 | `keyapi spec get-endpoint <endpoint-or-path>` | Get one endpoint's method, path, description, parameters, and body fields. |
@@ -24,7 +27,7 @@ KeyAPI CLI is a small command line tool for configuring a KeyAPI token, discover
 ## Recommended Workflow
 
 ```powershell
-keyapi config set token sk_xxx
+keyapi set token sk_xxx
 keyapi spec list-platforms
 keyapi spec list-endpoints google
 keyapi spec get-endpoint google/search
@@ -45,7 +48,7 @@ After selecting an endpoint, run `get-endpoint` and use its `parameters` and `bo
 Request construction rules:
 
 - For GET endpoints, put query parameters in the endpoint path.
-- Use `--qparam "k=v"` or `--query "k=v"` when query parameters need to be appended separately.
+- Use `--params "k=v"` or `--query "k=v"` when query parameters need to be appended separately.
 - Use `--body-json` for JSON request bodies.
 - Use `--body-raw` for raw text request bodies.
 - Use `--dry-run` before execution when request construction is uncertain.

@@ -11,27 +11,26 @@ This document lists the current KeyAPI CLI commands, arguments, flags, and JSON 
 | `keyapi --version` | Print CLI version. | Plain text |
 | `keyapi version` | Alias for version. | Plain text |
 
-## `keyapi config`
+## Top-Level Config Commands
 
-`config` commands keep their existing human-readable behavior. `config show` returns JSON; single-key operations return plain text.
+Config commands keep their existing human-readable behavior. `keyapi show` returns JSON; single-key operations return plain text.
 
 | Command | Description | Required Arguments | Output |
 | --- | --- | --- | --- |
-| `keyapi config --help` | Show config help. | None | Plain text |
-| `keyapi config show` | Show current config. The token is masked. | None | JSON |
-| `keyapi config get` | Show current config. Same as `show` when no key is provided. | None | JSON |
-| `keyapi config get token` | Show masked token. | `token` | Plain text |
-| `keyapi config get api-key` | Show masked token. Alias for `token`. | `api-key` | Plain text |
-| `keyapi config get auth-scheme` | Show authorization scheme. | `auth-scheme` | Plain text |
-| `keyapi config get language` | Show OpenAPI docs language. | `language` | Plain text |
-| `keyapi config get lang` | Show OpenAPI docs language. Alias for `language`. | `lang` | Plain text |
-| `keyapi config set token <value>` | Save KeyAPI token locally. | `token`, `value` | `saved` |
-| `keyapi config set api-key <value>` | Save KeyAPI token locally. Alias for `token`. | `api-key`, `value` | `saved` |
-| `keyapi config set auth-scheme <value>` | Save authorization scheme. Default is `Bearer`. | `auth-scheme`, `value` | `saved` |
-| `keyapi config set language <en\|zh>` | Save OpenAPI docs language. | `language`, `en` or `zh` | `saved` |
-| `keyapi config set lang <en\|zh>` | Save OpenAPI docs language. Alias for `language`. | `lang`, `en` or `zh` | `saved` |
-| `keyapi config clear token` | Remove stored token. | `token` | `cleared` |
-| `keyapi config clear api-key` | Remove stored token. Alias for `token`. | `api-key` | `cleared` |
+| `keyapi show` | Show current config. The token is masked. | None | JSON |
+| `keyapi get` | Show current config. Same as `show` when no key is provided. | None | JSON |
+| `keyapi get token` | Show masked token. | `token` | Plain text |
+| `keyapi get api-key` | Show masked token. Alias for `token`. | `api-key` | Plain text |
+| `keyapi get auth-scheme` | Show authorization scheme. | `auth-scheme` | Plain text |
+| `keyapi get language` | Show OpenAPI docs language. | `language` | Plain text |
+| `keyapi get lang` | Show OpenAPI docs language. Alias for `language`. | `lang` | Plain text |
+| `keyapi set token <value>` | Save KeyAPI token locally. | `token`, `value` | `saved` |
+| `keyapi set api-key <value>` | Save KeyAPI token locally. Alias for `token`. | `api-key`, `value` | `saved` |
+| `keyapi set auth-scheme <value>` | Save authorization scheme. Default is `Bearer`. | `auth-scheme`, `value` | `saved` |
+| `keyapi set language <en\|zh>` | Save OpenAPI docs language. | `language`, `en` or `zh` | `saved` |
+| `keyapi set lang <en\|zh>` | Save OpenAPI docs language. Alias for `language`. | `lang`, `en` or `zh` | `saved` |
+| `keyapi clear token` | Remove stored token. | `token` | `cleared` |
+| `keyapi clear api-key` | Remove stored token. Alias for `token`. | `api-key` | `cleared` |
 
 ## `keyapi spec`
 
@@ -180,7 +179,7 @@ https://api.keyapi.ai/v1/google/search?q=openai&gl=us
 | Flag | Required | Repeatable | Description |
 | --- | --- | --- | --- |
 | `--query "k=v"` | No | Yes | Add or append a URL query parameter. Always quote the full `k=v` value. |
-| `--qparam "k=v"` | No | Yes | Alias for `--query`. Useful when query parameters are appended separately from the endpoint path. Always quote the full `k=v` value. |
+| `--params "k=v"` | No | Yes | Add or append a URL query parameter. Useful when query parameters are appended separately from the endpoint path. Always quote the full `k=v` value. |
 | `--body-raw <text>` | No | No | Send a raw text request body with `Content-Type: text/plain; charset=utf-8`. |
 | `--body-json <json>` | No | No | Send a JSON request body with `Content-Type: application/json`. The value must be valid JSON. |
 | `--method <method>` | No | No | Override HTTP method. If omitted, `POST` is used when body data exists; otherwise `GET` is used. |
@@ -226,10 +225,10 @@ For GET endpoints, prefer putting query parameters directly in the endpoint path
 keyapi call "/v1/google/search?q=openai&gl=us&page=1"
 ```
 
-`--qparam` and `--query` are also supported and can be mixed with inline query parameters:
+`--params` and `--query` are also supported and can be mixed with inline query parameters:
 
 ```powershell
-keyapi call "/v1/google/search?q=openai" --qparam "gl=us" --qparam "page=1"
+keyapi call "/v1/google/search?q=openai" --params "gl=us" --params "page=1"
 ```
 
 HTTP status handling:
@@ -254,7 +253,7 @@ Selection rules:
 - Choose endpoints by reading `method`, `path`, `summary`, and `description`.
 - Inspect `parameters` and `body_fields` before constructing a request.
 - For GET endpoints, put query parameters in the endpoint path.
-- Use `--qparam "k=v"` or `--query "k=v"` when query parameters need to be appended separately.
+- Use `--params "k=v"` or `--query "k=v"` when query parameters need to be appended separately.
 - Use `--body-json` for JSON request bodies.
 - Use `--body-raw` for raw text request bodies.
 - Use `--dry-run` before execution when request construction is uncertain.

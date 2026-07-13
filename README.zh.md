@@ -45,10 +45,12 @@ Linux 或 macOS：
 go build -buildvcs=false -o keyapi .
 ```
 
+CLI 版本号定义在 `internal/cli/help.go` 中。发布新版本时，修改其中的 `version` 常量。
+
 ## 快速开始
 
 ```powershell
-.\keyapi.exe config set token sk_xxx
+.\keyapi.exe set token sk_xxx
 .\keyapi.exe spec list-platforms
 .\keyapi.exe spec list-endpoints google
 .\keyapi.exe spec get-endpoint google/search
@@ -59,7 +61,10 @@ go build -buildvcs=false -o keyapi .
 
 | 命令 | 作用 |
 | --- | --- |
-| `keyapi config` | 管理本地配置，包括 token 和文档语言。 |
+| `keyapi set <key> <value>` | 保存本地配置，包括 token 和文档语言。 |
+| `keyapi get <key>` | 读取一个本地配置值。 |
+| `keyapi show` | 查看当前本地配置。 |
+| `keyapi clear <key>` | 清除一个本地配置值。 |
 | `keyapi spec list-platforms` | 列出当前拥有 KeyAPI 接口的平台。 |
 | `keyapi spec list-endpoints <platform...\|all>` | 列出一个或多个平台的接口描述。 |
 | `keyapi spec get-endpoint <endpoint-or-path>` | 获取单个接口的方法、路径、描述、参数和 body 字段。 |
@@ -69,7 +74,10 @@ go build -buildvcs=false -o keyapi .
 
 ```powershell
 keyapi --help
-keyapi config --help
+keyapi set --help
+keyapi get --help
+keyapi show --help
+keyapi clear --help
 keyapi spec --help
 keyapi spec list-platforms --help
 keyapi spec list-endpoints --help
@@ -175,10 +183,10 @@ Query 参数：
 ```powershell
 keyapi call "/v1/google/search?q=openai&gl=us"
 keyapi call "/v1/tiktok/shop/product-search?keyword=hot%20sales&region=US"
-keyapi call /v1/google/search --qparam "q=openai" --qparam "gl=us"
+keyapi call /v1/google/search --params "q=openai" --params "gl=us"
 ```
 
-对于 GET 接口，推荐把 query 参数直接写在接口路径里。需要用程序追加参数时，可以使用 `--qparam "k=v"` 或 `--query "k=v"`。
+对于 GET 接口，推荐把 query 参数直接写在接口路径里。需要用程序追加参数时，可以使用 `--params "k=v"` 或 `--query "k=v"`。
 
 原始文本 body：
 
@@ -196,6 +204,14 @@ keyapi call tiktok/shop/product-search --body-json '{"timeRange":7,"countryCode"
 ```
 
 `--body-json` 必须是合法 JSON，并使用 `Content-Type: application/json`。JSON 非法时，CLI 会在发送请求前失败。
+
+在 PowerShell 中，推荐用单引号包住 JSON：
+
+```powershell
+keyapi call tiktok/shop/product-search --body-json '{"page":1,"verified":true}'
+```
+
+如果 PowerShell 在传给 exe 前吃掉了 JSON 里的双引号，CLI 会尽量把常见对象形式，例如 `{page:1,verified:true}`，规范化成合法 JSON。
 
 Dry run：
 
@@ -251,7 +267,7 @@ keyapi call "/v1/tiktok/influencer/detail?unique_id=mrbeast"
 - 通过阅读 `method`、`path`、`summary` 和 `description` 选择接口。
 - 构造请求前先查看 `parameters` 和 `body_fields`。
 - 对于 GET 接口，把 query 参数写在接口路径里，例如 `"/v1/google/search?q=openai&gl=us"`。
-- 需要单独追加 query 参数时，使用 `--qparam "k=v"` 或 `--query "k=v"`。
+- 需要单独追加 query 参数时，使用 `--params "k=v"` 或 `--query "k=v"`。
 - JSON 请求体使用 `--body-json`。
 - 原始文本请求体使用 `--body-raw`。
 - 不确定请求构造是否正确时，先使用 `--dry-run`。
@@ -259,11 +275,13 @@ keyapi call "/v1/tiktok/influencer/detail?unique_id=mrbeast"
 
 ## 文档
 
-| 文件 | 作用 |
-| --- | --- |
-| [docs/index.md](https://github.com/EchoSell/keyapi-cli/blob/main/docs/index.md) | 文档入口。 |
-| [docs/commands.md](https://github.com/EchoSell/keyapi-cli/blob/main/docs/commands.md) | 完整命令和参数参考。 |
-| [docs/config.md](https://github.com/EchoSell/keyapi-cli/blob/main/docs/config.md) | 配置文件和环境变量。 |
+| 文件 | 作用            |
+| --- |---------------|
+| [docs/index.md](https://github.com/EchoSell/keyapi-cli/blob/main/docs/index.md) | 文档入口。         |
+| [docs/commands.md](https://github.com/EchoSell/keyapi-cli/blob/main/docs/commands.md) | 完整命令和参数参考。    |
+| [docs/config.md](https://github.com/EchoSell/keyapi-cli/blob/main/docs/config.md) | 配置文件和环境变量。    |
 | [docs/reference/cli-spec.yaml](https://github.com/EchoSell/keyapi-cli/blob/main/docs/reference/cli-spec.yaml) | 轻量机器可读 CLI 契约。 |
-| [README.zh.md](https://github.com/EchoSell/keyapi-cli/blob/main/README.zh.md) | 中文 README。 |
-| [docs/zh/index.md](https://github.com/EchoSell/keyapi-cli/blob/main/docs/zh/index.md) | 中文文档入口。 |
+| [README.zh.md](https://github.com/EchoSell/keyapi-cli/blob/main/README.zh.md) | 中文 README。    |
+| [docs/zh/index.md](https://github.com/EchoSell/keyapi-cli/blob/main/docs/zh/index.md) | 中文文档入口。       |
+| [docs/commands.md](https://github.com/EchoSell/keyapi-cli/blob/main/docs/zh/commands.md) | 中文完整命令和参数参考。  |
+| [docs/config.md](https://github.com/EchoSell/keyapi-cli/blob/main/docs/zh/config.md) | 中文配置文件和环境变量。    |

@@ -2,21 +2,21 @@ package cli
 
 import "fmt"
 
-const version = "0.1.0"
+const version = "1.0.0"
 
 func printRootHelp() {
 	fmt.Println(`KeyAPI CLI
 
 Usage:
-  keyapi config set token <value>
-  keyapi config show
+  keyapi set token <value>
+  keyapi show
   keyapi spec list-platforms
   keyapi spec list-endpoints <platform...|all>
   keyapi spec get-endpoint <endpoint-or-path>
   keyapi call <endpoint-or-path> [flags]
 
 Core workflow:
-  1. Configure token:    keyapi config set token sk_xxx
+  1. Configure token:    keyapi set token sk_xxx
   2. List platforms:     keyapi spec list-platforms
   3. List endpoints:     keyapi spec list-endpoints tiktok instagram
   4. Inspect endpoint:   keyapi spec get-endpoint tiktok/influencer/detail
@@ -34,14 +34,14 @@ When to use:
   Use before authenticated API requests, or to set the OpenAPI docs language.
 
 Usage:
-  keyapi config set token <value>
-  keyapi config set language <en|zh>
-  keyapi config get token
-  keyapi config show
-  keyapi config clear token
+  keyapi set token <value>
+  keyapi set language <en|zh>
+  keyapi get token
+  keyapi show
+  keyapi clear token
 
 Output:
-  JSON for config show; plain text for single-key get.`)
+  JSON for show; plain text for single-key get.`)
 }
 
 func printSpecHelp() {
@@ -136,14 +136,14 @@ When to use:
   Use after endpoint details are known from spec get-endpoint.
 
 Usage:
-  keyapi call <endpoint-or-path-with-query> [--qparam "k=v"] [--body-raw TEXT] [--method GET] [--body-json JSON]
+  keyapi call <endpoint-or-path-with-query> [--params "k=v"] [--body-raw TEXT] [--method GET] [--body-json JSON]
 
 Parameters:
   endpoint-or-path-with-query: google/search, /v1/google/search?q=openai, or a full KeyAPI URL.
   --query: Add or append a URL query parameter as "key=value". Repeatable.
-  --qparam: alias for --query.
+  --params: Add or append a URL query parameter as "key=value". Repeatable.
   --body-raw: Raw text request body. Sent as text/plain without JSON validation.
-  --body-json: JSON request body. Must be valid JSON and is sent as application/json.
+  --body-json: JSON request body. Must be valid JSON and is sent as application/json. PowerShell-style {q:openai} input is normalized when possible.
   --method: HTTP method override.
   --dry-run: Print request JSON without sending.
   --format: json, pretty, or raw. Default is json.

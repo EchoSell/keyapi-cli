@@ -32,7 +32,8 @@ func runCall(args []string) error {
 	dryRun := fs.Bool("dry-run", false, "print the request without sending it")
 	var queries repeatedFlag
 	fs.Var(&queries, "query", "query parameter as \"k=v\"; may be repeated")
-	fs.Var(&queries, "qparam", "alias for --query")
+	fs.Var(&queries, "params", "query parameter as \"k=v\"; may be repeated")
+	fs.Var(&queries, "qparam", "alias for --params")
 	if err := fs.Parse(args[1:]); err != nil {
 		return err
 	}
@@ -51,7 +52,7 @@ func runCall(args []string) error {
 		cfg.APIKey = *token
 	}
 	if cfg.APIKey == "" {
-		return errors.New("missing API key; set KEYAPI_API_KEY or run keyapi config set token <value>")
+		return errors.New("missing API key; set KEYAPI_API_KEY or run keyapi set token <value>")
 	}
 
 	path, inferredMethod := resolveEndpoint(endpoint)
@@ -83,10 +84,14 @@ func runCall(args []string) error {
 	var bodyValue interface{}
 	contentType := ""
 	if *bodyJSON != "" {
-		if err := json.Unmarshal([]byte(*bodyJSON), &bodyValue); err != nil {
+		normalized, err := normalizeBodyJSON(*bodyJSON)
+		if err != nil {
 			return fmt.Errorf("invalid --body-json: %w", err)
 		}
-		body = strings.NewReader(*bodyJSON)
+		if err := json.Unmarshal([]byte(normalized), &bodyValue); err != nil {
+			return fmt.Errorf("invalid --body-json: %w", err)
+		}
+		body = strings.NewReader(normalized)
 		contentType = "application/json"
 	} else if *bodyRaw != "" {
 		body = strings.NewReader(*bodyRaw)

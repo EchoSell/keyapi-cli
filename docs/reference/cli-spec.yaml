@@ -1,5 +1,5 @@
 name: keyapi
-version: "0.1.0"
+version: "1.0.0"
 description: "A lightweight CLI for configuring, discovering, and calling KeyAPI endpoints."
 audience:
   - cli_user
@@ -14,7 +14,7 @@ notes:
 commands:
   - name: "keyapi"
     description: "Show root help, version, or route to a subcommand."
-    usage: "keyapi [--help|--version|config|spec|call]"
+    usage: "keyapi [--help|--version|show|get|set|clear|spec|call]"
     required: []
     parameters:
       - name: "--help"
@@ -27,16 +27,16 @@ commands:
         description: "Print CLI version."
     output: "text"
 
-  - name: "keyapi config show"
+  - name: "keyapi show"
     description: "Show current configuration with the token masked."
-    usage: "keyapi config show"
+    usage: "keyapi show"
     required: []
     parameters: []
     output: "json"
 
-  - name: "keyapi config get"
+  - name: "keyapi get"
     description: "Show full config when no key is provided, or show one config value."
-    usage: "keyapi config get [token|api-key|auth-scheme|language|lang]"
+    usage: "keyapi get [token|api-key|auth-scheme|language|lang]"
     required: []
     parameters:
       - name: "key"
@@ -46,9 +46,9 @@ commands:
         description: "Optional config key to read."
     output: "json_or_text"
 
-  - name: "keyapi config set"
+  - name: "keyapi set"
     description: "Save one local config value."
-    usage: "keyapi config set <token|api-key|auth-scheme|language|lang> <value>"
+    usage: "keyapi set <token|api-key|auth-scheme|language|lang> <value>"
     required: ["key", "value"]
     parameters:
       - name: "key"
@@ -62,9 +62,9 @@ commands:
         description: "Config value. language/lang must be en or zh."
     output: "text"
 
-  - name: "keyapi config clear"
+  - name: "keyapi clear"
     description: "Clear the stored API token."
-    usage: "keyapi config clear <token|api-key>"
+    usage: "keyapi clear <token|api-key>"
     required: ["key"]
     parameters:
       - name: "key"
@@ -136,7 +136,7 @@ commands:
 
   - name: "keyapi call"
     description: "Execute a KeyAPI endpoint request."
-    usage: "keyapi call <endpoint-or-path-with-query> [--qparam \"k=v\"] [--body-raw TEXT] [--body-json JSON] [--method METHOD] [--format json|pretty|raw] [--dry-run]"
+    usage: "keyapi call <endpoint-or-path-with-query> [--params \"k=v\"] [--body-raw TEXT] [--body-json JSON] [--method METHOD] [--format json|pretty|raw] [--dry-run]"
     required: ["endpoint_or_path"]
     parameters:
       - name: "endpoint_or_path"
@@ -148,11 +148,11 @@ commands:
         required: false
         repeatable: true
         description: "Add or append a URL query parameter as quoted k=v."
-      - name: "--qparam"
+      - name: "--params"
         type: "quoted_key_value"
         required: false
         repeatable: true
-        description: "Alias for --query. Useful when query parameters are appended separately from the endpoint path."
+        description: "Add or append a URL query parameter as quoted k=v. Useful when query parameters are appended separately from the endpoint path."
       - name: "--body-raw"
         type: "string"
         required: false
@@ -161,7 +161,7 @@ commands:
       - name: "--body-json"
         type: "json"
         required: false
-        description: "JSON request body. Must be valid JSON and is sent as application/json."
+        description: "JSON request body. Must be valid JSON and is sent as application/json. Common PowerShell-mangled object input is normalized when possible."
       - name: "--method"
         type: "string"
         required: false

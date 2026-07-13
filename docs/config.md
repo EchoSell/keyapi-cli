@@ -54,19 +54,19 @@ Notes:
 Save a token:
 
 ```powershell
-keyapi config set token sk_xxx
+keyapi set token sk_xxx
 ```
 
 Show the masked token:
 
 ```powershell
-keyapi config get token
+keyapi get token
 ```
 
 Remove the stored token:
 
 ```powershell
-keyapi config clear token
+keyapi clear token
 ```
 
 For temporary use, prefer the environment variable:
@@ -78,8 +78,8 @@ $env:KEYAPI_API_KEY='sk_xxx'
 ## Managing Docs Language
 
 ```powershell
-keyapi config set language en
-keyapi config set language zh
+keyapi set language en
+keyapi set language zh
 ```
 
 | Value | Meaning |

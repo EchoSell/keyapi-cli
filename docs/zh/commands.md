@@ -11,27 +11,26 @@
 | `keyapi --version` | 输出 CLI 版本号。 | 普通文本 |
 | `keyapi version` | 版本命令别名。 | 普通文本 |
 
-## `keyapi config`
+## 顶层配置命令
 
-`config` 命令主要用于本地配置管理。`config show` 返回 JSON，单个配置项操作返回普通文本。
+配置命令主要用于本地配置管理。`keyapi show` 返回 JSON，单个配置项操作返回普通文本。
 
 | 命令 | 说明 | 必填参数 | 输出 |
 | --- | --- | --- | --- |
-| `keyapi config --help` | 显示配置命令帮助。 | 无 | 普通文本 |
-| `keyapi config show` | 显示当前配置，token 会被打码。 | 无 | JSON |
-| `keyapi config get` | 不指定 key 时等同于 `show`。 | 无 | JSON |
-| `keyapi config get token` | 显示打码后的 token。 | `token` | 普通文本 |
-| `keyapi config get api-key` | 显示打码后的 token，`token` 的别名。 | `api-key` | 普通文本 |
-| `keyapi config get auth-scheme` | 显示认证方案。 | `auth-scheme` | 普通文本 |
-| `keyapi config get language` | 显示 OpenAPI 文档语言。 | `language` | 普通文本 |
-| `keyapi config get lang` | 显示 OpenAPI 文档语言，`language` 的别名。 | `lang` | 普通文本 |
-| `keyapi config set token <value>` | 保存 KeyAPI token。 | `token`, `value` | `saved` |
-| `keyapi config set api-key <value>` | 保存 KeyAPI token，`token` 的别名。 | `api-key`, `value` | `saved` |
-| `keyapi config set auth-scheme <value>` | 保存认证方案，默认值为 `Bearer`。 | `auth-scheme`, `value` | `saved` |
-| `keyapi config set language <en\|zh>` | 保存 OpenAPI 文档语言。 | `language`, `en` 或 `zh` | `saved` |
-| `keyapi config set lang <en\|zh>` | 保存 OpenAPI 文档语言，`language` 的别名。 | `lang`, `en` 或 `zh` | `saved` |
-| `keyapi config clear token` | 删除已保存的 token。 | `token` | `cleared` |
-| `keyapi config clear api-key` | 删除已保存的 token，`token` 的别名。 | `api-key` | `cleared` |
+| `keyapi show` | 显示当前配置，token 会被打码。 | 无 | JSON |
+| `keyapi get` | 不指定 key 时等同于 `show`。 | 无 | JSON |
+| `keyapi get token` | 显示打码后的 token。 | `token` | 普通文本 |
+| `keyapi get api-key` | 显示打码后的 token，`token` 的别名。 | `api-key` | 普通文本 |
+| `keyapi get auth-scheme` | 显示认证方案。 | `auth-scheme` | 普通文本 |
+| `keyapi get language` | 显示 OpenAPI 文档语言。 | `language` | 普通文本 |
+| `keyapi get lang` | 显示 OpenAPI 文档语言，`language` 的别名。 | `lang` | 普通文本 |
+| `keyapi set token <value>` | 保存 KeyAPI token。 | `token`, `value` | `saved` |
+| `keyapi set api-key <value>` | 保存 KeyAPI token，`token` 的别名。 | `api-key`, `value` | `saved` |
+| `keyapi set auth-scheme <value>` | 保存认证方案，默认值为 `Bearer`。 | `auth-scheme`, `value` | `saved` |
+| `keyapi set language <en\|zh>` | 保存 OpenAPI 文档语言。 | `language`, `en` 或 `zh` | `saved` |
+| `keyapi set lang <en\|zh>` | 保存 OpenAPI 文档语言，`language` 的别名。 | `lang`, `en` 或 `zh` | `saved` |
+| `keyapi clear token` | 删除已保存的 token。 | `token` | `cleared` |
+| `keyapi clear api-key` | 删除已保存的 token，`token` 的别名。 | `api-key` | `cleared` |
 
 ## `keyapi spec`
 
@@ -180,7 +179,7 @@ https://api.keyapi.ai/v1/google/search?q=openai&gl=us
 | Flag | 必填 | 可重复 | 说明 |
 | --- | --- | --- | --- |
 | `--query "k=v"` | 否 | 是 | 添加或追加 URL query 参数。完整的 `k=v` 都需要加引号。 |
-| `--qparam "k=v"` | 否 | 是 | `--query` 的别名。适合在接口路径之外单独追加 query 参数。完整的 `k=v` 都需要加引号。 |
+| `--params "k=v"` | 否 | 是 | 添加或追加 URL query 参数。适合在接口路径之外单独追加 query 参数。完整的 `k=v` 都需要加引号。 |
 | `--body-raw <text>` | 否 | 否 | 发送原始文本请求体，使用 `Content-Type: text/plain; charset=utf-8`。 |
 | `--body-json <json>` | 否 | 否 | 发送 JSON 请求体，使用 `Content-Type: application/json`，必须是合法 JSON。 |
 | `--method <method>` | 否 | 否 | 覆盖 HTTP 方法。未指定时，有 body 默认为 `POST`，否则为 `GET`。 |
@@ -220,10 +219,10 @@ https://api.keyapi.ai/v1/google/search?q=openai&gl=us
 keyapi call "/v1/google/search?q=openai&gl=us&page=1"
 ```
 
-同时也支持 `--qparam` 和 `--query`，并且可以和路径里的 query 参数混合使用：
+同时也支持 `--params` 和 `--query`，并且可以和路径里的 query 参数混合使用：
 
 ```powershell
-keyapi call "/v1/google/search?q=openai" --qparam "gl=us" --qparam "page=1"
+keyapi call "/v1/google/search?q=openai" --params "gl=us" --params "page=1"
 ```
 
 HTTP 状态处理：
@@ -248,7 +247,7 @@ HTTP 状态处理：
 - 通过 `method`、`path`、`summary`、`description` 选择接口。
 - 构造请求前先查看 `parameters` 和 `body_fields`。
 - GET 接口优先把 query 参数写在接口路径里。
-- 需要单独追加 query 参数时，使用 `--qparam "k=v"` 或 `--query "k=v"`。
+- 需要单独追加 query 参数时，使用 `--params "k=v"` 或 `--query "k=v"`。
 - JSON 请求体使用 `--body-json`。
 - 原始文本请求体使用 `--body-raw`。
 - 不确定请求是否正确时，先使用 `--dry-run`。

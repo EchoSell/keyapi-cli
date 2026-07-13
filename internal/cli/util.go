@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"net/url"
+	"strconv"
 	"strings"
 )
 
@@ -23,6 +24,259 @@ func splitKV(input string) (string, string, error) {
 		return "", "", errors.New("expected k=v")
 	}
 	return key, value, nil
+}
+
+func normalizeBodyJSON(input string) (string, error) {
+	input = strings.TrimSpace(input)
+	if len(input) >= 2 && input[0] == '\'' && input[len(input)-1] == '\'' {
+		input = strings.TrimSpace(input[1 : len(input)-1])
+	}
+	if json.Valid([]byte(input)) {
+		return input, nil
+	}
+
+	parser := looseJSONParser{input: input}
+	repaired, err := parser.parseValue()
+	if err != nil {
+		return "", err
+	}
+	parser.skipSpaces()
+	if parser.pos != len(parser.input) {
+		return "", fmt.Errorf("unexpected trailing content at byte %d", parser.pos)
+	}
+	if !json.Valid([]byte(repaired)) {
+		return "", errors.New("value is not valid JSON")
+	}
+	return repaired, nil
+}
+
+type looseJSONParser struct {
+	input string
+	pos   int
+}
+
+func (p *looseJSONParser) parseValue() (string, error) {
+	p.skipSpaces()
+	if p.pos >= len(p.input) {
+		return "", errors.New("missing value")
+	}
+
+	switch p.input[p.pos] {
+	case '{':
+		return p.parseObject()
+	case '[':
+		return p.parseArray()
+	case '"':
+		return p.parseDoubleQuotedString()
+	case '\'':
+		value, err := p.parseSingleQuotedString()
+		if err != nil {
+			return "", err
+		}
+		return quoteJSONString(value), nil
+	default:
+		token := p.readBareToken()
+		if token == "" {
+			return "", fmt.Errorf("unexpected character %q at byte %d", p.input[p.pos], p.pos)
+		}
+		if isJSONLiteral(token) || isJSONNumber(token) {
+			return token, nil
+		}
+		return quoteJSONString(token), nil
+	}
+}
+
+func (p *looseJSONParser) parseObject() (string, error) {
+	p.pos++
+	var b strings.Builder
+	b.WriteByte('{')
+	first := true
+
+	for {
+		p.skipSpaces()
+		if p.pos >= len(p.input) {
+			return "", errors.New("unterminated object")
+		}
+		if p.input[p.pos] == '}' {
+			p.pos++
+			b.WriteByte('}')
+			return b.String(), nil
+		}
+		if !first {
+			if p.input[p.pos] != ',' {
+				return "", fmt.Errorf("expected comma at byte %d", p.pos)
+			}
+			p.pos++
+			p.skipSpaces()
+		}
+
+		key, err := p.parseObjectKey()
+		if err != nil {
+			return "", err
+		}
+		p.skipSpaces()
+		if p.pos >= len(p.input) || p.input[p.pos] != ':' {
+			return "", fmt.Errorf("expected colon after object key at byte %d", p.pos)
+		}
+		p.pos++
+		value, err := p.parseValue()
+		if err != nil {
+			return "", err
+		}
+		if !first {
+			b.WriteByte(',')
+		}
+		b.WriteString(quoteJSONString(key))
+		b.WriteByte(':')
+		b.WriteString(value)
+		first = false
+	}
+}
+
+func (p *looseJSONParser) parseArray() (string, error) {
+	p.pos++
+	var b strings.Builder
+	b.WriteByte('[')
+	first := true
+
+	for {
+		p.skipSpaces()
+		if p.pos >= len(p.input) {
+			return "", errors.New("unterminated array")
+		}
+		if p.input[p.pos] == ']' {
+			p.pos++
+			b.WriteByte(']')
+			return b.String(), nil
+		}
+		if !first {
+			if p.input[p.pos] != ',' {
+				return "", fmt.Errorf("expected comma at byte %d", p.pos)
+			}
+			p.pos++
+		}
+		value, err := p.parseValue()
+		if err != nil {
+			return "", err
+		}
+		if !first {
+			b.WriteByte(',')
+		}
+		b.WriteString(value)
+		first = false
+	}
+}
+
+func (p *looseJSONParser) parseObjectKey() (string, error) {
+	p.skipSpaces()
+	if p.pos >= len(p.input) {
+		return "", errors.New("missing object key")
+	}
+	switch p.input[p.pos] {
+	case '"':
+		raw, err := p.parseDoubleQuotedString()
+		if err != nil {
+			return "", err
+		}
+		var key string
+		if err := json.Unmarshal([]byte(raw), &key); err != nil {
+			return "", err
+		}
+		return key, nil
+	case '\'':
+		return p.parseSingleQuotedString()
+	default:
+		start := p.pos
+		for p.pos < len(p.input) && p.input[p.pos] != ':' {
+			p.pos++
+		}
+		key := strings.TrimSpace(p.input[start:p.pos])
+		if key == "" {
+			return "", errors.New("empty object key")
+		}
+		return key, nil
+	}
+}
+
+func (p *looseJSONParser) parseDoubleQuotedString() (string, error) {
+	start := p.pos
+	p.pos++
+	escaped := false
+	for p.pos < len(p.input) {
+		ch := p.input[p.pos]
+		p.pos++
+		if escaped {
+			escaped = false
+			continue
+		}
+		if ch == '\\' {
+			escaped = true
+			continue
+		}
+		if ch == '"' {
+			raw := p.input[start:p.pos]
+			if !json.Valid([]byte(raw)) {
+				return "", fmt.Errorf("invalid string at byte %d", start)
+			}
+			return raw, nil
+		}
+	}
+	return "", errors.New("unterminated string")
+}
+
+func (p *looseJSONParser) parseSingleQuotedString() (string, error) {
+	p.pos++
+	start := p.pos
+	for p.pos < len(p.input) {
+		if p.input[p.pos] == '\'' {
+			value := p.input[start:p.pos]
+			p.pos++
+			return value, nil
+		}
+		p.pos++
+	}
+	return "", errors.New("unterminated single-quoted string")
+}
+
+func (p *looseJSONParser) readBareToken() string {
+	start := p.pos
+	for p.pos < len(p.input) {
+		switch p.input[p.pos] {
+		case ',', '}', ']':
+			return strings.TrimSpace(p.input[start:p.pos])
+		default:
+			p.pos++
+		}
+	}
+	return strings.TrimSpace(p.input[start:p.pos])
+}
+
+func (p *looseJSONParser) skipSpaces() {
+	for p.pos < len(p.input) {
+		switch p.input[p.pos] {
+		case ' ', '\t', '\r', '\n':
+			p.pos++
+		default:
+			return
+		}
+	}
+}
+
+func isJSONLiteral(token string) bool {
+	return token == "true" || token == "false" || token == "null"
+}
+
+func isJSONNumber(token string) bool {
+	if token == "" {
+		return false
+	}
+	_, err := strconv.ParseFloat(token, 64)
+	return err == nil
+}
+
+func quoteJSONString(value string) string {
+	raw, _ := json.Marshal(value)
+	return string(raw)
 }
 
 func mask(value string) string {

@@ -53,19 +53,19 @@ $env:KEYAPI_HOME='C:\path\to\keyapi-home'
 保存 token：
 
 ```powershell
-keyapi config set token sk_xxx
+keyapi set token sk_xxx
 ```
 
 查看打码后的 token：
 
 ```powershell
-keyapi config get token
+keyapi get token
 ```
 
 删除已保存的 token：
 
 ```powershell
-keyapi config clear token
+keyapi clear token
 ```
 
 临时使用 token 时，推荐使用环境变量：
@@ -77,8 +77,8 @@ $env:KEYAPI_API_KEY='sk_xxx'
 ## 管理文档语言
 
 ```powershell
-keyapi config set language en
-keyapi config set language zh
+keyapi set language en
+keyapi set language zh
 ```
 
 | 值 | 含义 |

@@ -17,6 +17,8 @@ func Run(args []string) error {
 	case "-v", "--version", "version":
 		fmt.Println(version)
 		return nil
+	case "show", "get", "set", "clear":
+		return runConfig(args)
 	case "config":
 		return runConfig(args[1:])
 	case "spec":

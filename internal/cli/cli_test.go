@@ -53,6 +53,26 @@ func TestSplitKV(t *testing.T) {
 	}
 }
 
+func TestNormalizeBodyJSON(t *testing.T) {
+	tests := map[string]string{
+		`{"page":1,"verified":true}`:          `{"page":1,"verified":true}`,
+		`'{page:1,verified:true}'`:            `{"page":1,"verified":true}`,
+		`{page:1,verified:true}`:              `{"page":1,"verified":true}`,
+		`{q:openai,page:1,verified:true}`:     `{"q":"openai","page":1,"verified":true}`,
+		`{filter:{countryCode:US},limit:100}`: `{"filter":{"countryCode":"US"},"limit":100}`,
+	}
+
+	for input, want := range tests {
+		got, err := normalizeBodyJSON(input)
+		if err != nil {
+			t.Fatalf("normalizeBodyJSON(%q) returned error: %v", input, err)
+		}
+		if got != want {
+			t.Fatalf("normalizeBodyJSON(%q) = %s, want %s", input, got, want)
+		}
+	}
+}
+
 func TestCallRejectsInvalidBodyJSON(t *testing.T) {
 	t.Setenv("KEYAPI_API_KEY", "sk_test")
 
@@ -62,12 +82,63 @@ func TestCallRejectsInvalidBodyJSON(t *testing.T) {
 	}
 }
 
+func TestCallBodyJSONAcceptsPowerShellMangledObject(t *testing.T) {
+	server := newCallTestServer(t, func(r *http.Request, body string) {
+		if got := r.Header.Get("Content-Type"); got != "application/json" {
+			t.Fatalf("expected application/json content type, got %q", got)
+		}
+		if body != `{"page":1,"verified":true}` {
+			t.Fatalf("unexpected body %q", body)
+		}
+	})
+	defer server.Close()
+
+	writeCallTestConfig(t, server.URL)
+
+	err := runCall([]string{"google/search", "--body-json", `{page:1,verified:true}`})
+	if err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestCallParamsAliasAppendsQuery(t *testing.T) {
+	server := newCallTestServer(t, func(r *http.Request, body string) {
+		if got := r.URL.Query().Get("gl"); got != "us" {
+			t.Fatalf("expected gl=us, got %q", got)
+		}
+		if got := r.URL.Query().Get("page"); got != "1" {
+			t.Fatalf("expected page=1, got %q", got)
+		}
+	})
+	defer server.Close()
+
+	writeCallTestConfig(t, server.URL)
+
+	err := runCall([]string{"/v1/google/search?gl=us", "--params", "page=1"})
+	if err != nil {
+		t.Fatal(err)
+	}
+}
+
 func TestCallRejectsBodyRawAndBodyJSONTogether(t *testing.T) {
 	t.Setenv("KEYAPI_API_KEY", "sk_test")
 
 	err := runCall([]string{"google/search", "--body-raw", "plain text", "--body-json", `{"keyword":"openai"}`})
 	if err == nil {
 		t.Fatal("expected --body-raw and --body-json conflict error")
+	}
+}
+
+func TestRunTopLevelConfigSetAndGet(t *testing.T) {
+	home := t.TempDir()
+	t.Setenv("KEYAPI_HOME", home)
+	t.Setenv("KEYAPI_API_KEY", "")
+
+	if err := Run([]string{"set", "token", "sk_test"}); err != nil {
+		t.Fatal(err)
+	}
+	if err := Run([]string{"get", "token"}); err != nil {
+		t.Fatal(err)
 	}
 }
 

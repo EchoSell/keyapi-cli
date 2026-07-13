@@ -6,7 +6,10 @@ KeyAPI CLI 是一个小型命令行工具，用于配置 KeyAPI token、发现 A
 
 | 命令 | 作用 |
 | --- | --- |
-| `keyapi config` | 管理本地 token 和 CLI 设置。 |
+| `keyapi set <key> <value>` | 保存本地 token 和 CLI 设置。 |
+| `keyapi get <key>` | 读取一个本地配置值。 |
+| `keyapi show` | 查看当前本地配置。 |
+| `keyapi clear <key>` | 清除一个本地配置值。 |
 | `keyapi spec list-platforms` | 列出当前可用的 KeyAPI 平台。 |
 | `keyapi spec list-endpoints <platform...\|all>` | 列出一个或多个平台的接口描述。 |
 | `keyapi spec get-endpoint <endpoint-or-path>` | 获取单个接口的方法、路径、描述、参数和 body 字段。 |
@@ -23,7 +26,7 @@ KeyAPI CLI 是一个小型命令行工具，用于配置 KeyAPI token、发现 A
 ## 推荐流程
 
 ```powershell
-keyapi config set token sk_xxx
+keyapi set token sk_xxx
 keyapi spec list-platforms
 keyapi spec list-endpoints google
 keyapi spec get-endpoint google/search
@@ -44,7 +47,7 @@ keyapi call "/v1/google/search?q=openai"
 请求构造规则：
 
 - GET 接口优先把 query 参数写在接口路径里。
-- 需要单独追加 query 参数时，使用 `--qparam "k=v"` 或 `--query "k=v"`。
+- 需要单独追加 query 参数时，使用 `--params "k=v"` 或 `--query "k=v"`。
 - JSON 请求体使用 `--body-json`。
 - 原始文本请求体使用 `--body-raw`。
 - 不确定请求是否正确时，先使用 `--dry-run`。

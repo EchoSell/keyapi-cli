@@ -44,10 +44,12 @@ Linux or macOS:
 go build -buildvcs=false -o keyapi .
 ```
 
+The CLI version is defined in `internal/cli/help.go`. Update the `version` constant there when releasing a new version.
+
 ## Quick Start
 
 ```powershell
-.\keyapi.exe config set token sk_xxx
+.\keyapi.exe set token sk_xxx
 .\keyapi.exe spec list-platforms
 .\keyapi.exe spec list-endpoints google
 .\keyapi.exe spec get-endpoint google/search
@@ -58,7 +60,10 @@ go build -buildvcs=false -o keyapi .
 
 | Command | Purpose |
 | --- | --- |
-| `keyapi config` | Manage local configuration, including token and docs language. |
+| `keyapi set <key> <value>` | Save local configuration, including token and docs language. |
+| `keyapi get <key>` | Read one local configuration value. |
+| `keyapi show` | Show current local configuration. |
+| `keyapi clear <key>` | Clear one local configuration value. |
 | `keyapi spec list-platforms` | List platforms that currently have KeyAPI endpoints. |
 | `keyapi spec list-endpoints <platform...\|all>` | List endpoint descriptions for one or more platforms. |
 | `keyapi spec get-endpoint <endpoint-or-path>` | Get method, path, description, parameters, and body fields for one endpoint. |
@@ -68,7 +73,10 @@ Every command supports help:
 
 ```powershell
 keyapi --help
-keyapi config --help
+keyapi set --help
+keyapi get --help
+keyapi show --help
+keyapi clear --help
 keyapi spec --help
 keyapi spec list-platforms --help
 keyapi spec list-endpoints --help
@@ -174,10 +182,10 @@ Query parameters:
 ```powershell
 keyapi call "/v1/google/search?q=openai&gl=us"
 keyapi call "/v1/tiktok/shop/product-search?keyword=hot%20sales&region=US"
-keyapi call /v1/google/search --qparam "q=openai" --qparam "gl=us"
+keyapi call /v1/google/search --params "q=openai" --params "gl=us"
 ```
 
-For GET endpoints, prefer putting query parameters directly in the endpoint path. Use `--qparam "k=v"` or `--query "k=v"` when parameters are easier to append programmatically.
+For GET endpoints, prefer putting query parameters directly in the endpoint path. Use `--params "k=v"` or `--query "k=v"` when parameters are easier to append programmatically.
 
 Raw text body:
 
@@ -195,6 +203,14 @@ keyapi call tiktok/shop/product-search --body-json '{"timeRange":7,"countryCode"
 ```
 
 `--body-json` must be valid JSON and is sent with `Content-Type: application/json`. Invalid JSON fails before the request is sent.
+
+In PowerShell, wrap JSON with single quotes:
+
+```powershell
+keyapi call tiktok/shop/product-search --body-json '{"page":1,"verified":true}'
+```
+
+If PowerShell strips JSON double quotes before they reach the executable, the CLI normalizes common object forms such as `{page:1,verified:true}` back to valid JSON.
 
 Dry run:
 
@@ -250,7 +266,7 @@ Workflow rules:
 - Choose endpoints by reading `method`, `path`, `summary`, and `description`.
 - Inspect `parameters` and `body_fields` before constructing a request.
 - For GET endpoints, put query parameters in the endpoint path, for example `"/v1/google/search?q=openai&gl=us"`.
-- Use `--qparam "k=v"` or `--query "k=v"` when query parameters need to be appended separately.
+- Use `--params "k=v"` or `--query "k=v"` when query parameters need to be appended separately.
 - Use `--body-json` for JSON request bodies.
 - Use `--body-raw` for raw text request bodies.
 - Use `--dry-run` before execution when request construction is uncertain.
@@ -258,11 +274,13 @@ Workflow rules:
 
 ## Documentation
 
-| File | Purpose |
-| --- | --- |
-| [docs/index.md](https://github.com/EchoSell/keyapi-cli/blob/main/docs/index.md) | Documentation entry point. |
-| [docs/commands.md](https://github.com/EchoSell/keyapi-cli/blob/main/docs/commands.md) | Full command and parameter reference. |
-| [docs/config.md](https://github.com/EchoSell/keyapi-cli/blob/main/docs/config.md) | Config file and environment variables. |
-| [docs/reference/cli-spec.yaml](https://github.com/EchoSell/keyapi-cli/blob/main/docs/reference/cli-spec.yaml) | Lightweight machine-readable CLI contract. |
-| [README.zh.md](https://github.com/EchoSell/keyapi-cli/blob/main/README.zh.md) | Chinese README. |
-| [docs/zh/index.md](https://github.com/EchoSell/keyapi-cli/blob/main/docs/zh/index.md) | Chinese documentation entry point. |
+| File | Purpose                                        |
+| --- |------------------------------------------------|
+| [docs/index.md](https://github.com/EchoSell/keyapi-cli/blob/main/docs/index.md) | Documentation entry point.                     |
+| [docs/commands.md](https://github.com/EchoSell/keyapi-cli/blob/main/docs/commands.md) | Full command and parameter reference.          |
+| [docs/config.md](https://github.com/EchoSell/keyapi-cli/blob/main/docs/config.md) | Config file and environment variables.         |
+| [docs/reference/cli-spec.yaml](https://github.com/EchoSell/keyapi-cli/blob/main/docs/reference/cli-spec.yaml) | Lightweight machine-readable CLI contract.     |
+| [README.zh.md](https://github.com/EchoSell/keyapi-cli/blob/main/README.zh.md) | Chinese README.                                |
+| [docs/zh/index.md](https://github.com/EchoSell/keyapi-cli/blob/main/docs/zh/index.md) | Chinese documentation entry point.             |
+| [docs/commands.md](https://github.com/EchoSell/keyapi-cli/blob/main/docs/zh/commands.md) | Chinese full command and parameter reference.  |
+| [docs/config.md](https://github.com/EchoSell/keyapi-cli/blob/main/docs/zh/config.md) | Chinese config file and environment variables. |
