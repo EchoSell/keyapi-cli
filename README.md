@@ -280,7 +280,7 @@ Workflow rules:
 | [docs/commands.md](https://github.com/EchoSell/keyapi-cli/blob/main/docs/commands.md) | Full command and parameter reference.          |
 | [docs/config.md](https://github.com/EchoSell/keyapi-cli/blob/main/docs/config.md) | Config file and environment variables.         |
 | [docs/reference/cli-spec.yaml](https://github.com/EchoSell/keyapi-cli/blob/main/docs/reference/cli-spec.yaml) | Lightweight machine-readable CLI contract.     |
-| [README.zh.md](https://github.com/EchoSell/keyapi-cli/blob/main/README.zh.md) | Chinese README.                                |
-| [docs/zh/index.md](https://github.com/EchoSell/keyapi-cli/blob/main/docs/zh/index.md) | Chinese documentation entry point.             |
-| [docs/commands.md](https://github.com/EchoSell/keyapi-cli/blob/main/docs/zh/commands.md) | Chinese full command and parameter reference.  |
-| [docs/config.md](https://github.com/EchoSell/keyapi-cli/blob/main/docs/zh/config.md) | Chinese config file and environment variables. |
+| [README.zh.md](https://github.com/EchoSell/keyapi-cli/blob/main/README.zh.md) | 中文 README。    |
+| [docs/zh/index.md](https://github.com/EchoSell/keyapi-cli/blob/main/docs/zh/index.md) | 中文文档入口。       |
+| [docs/commands.md](https://github.com/EchoSell/keyapi-cli/blob/main/docs/zh/commands.md) | 中文完整命令和参数参考。  |
+| [docs/config.md](https://github.com/EchoSell/keyapi-cli/blob/main/docs/zh/config.md) | 中文配置文件和环境变量。    |
