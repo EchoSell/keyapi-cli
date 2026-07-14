@@ -51,4 +51,5 @@ Request construction rules:
 - Use `--params "k=v"` or `--query "k=v"` when query parameters need to be appended separately.
 - Use `--body-json` for JSON request bodies.
 - Use `--body-raw` for raw text request bodies.
+- Use `--output "path"` when response bodies should be written to files.
 - Use `--dry-run` before execution when request construction is uncertain.

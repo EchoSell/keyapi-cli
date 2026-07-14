@@ -218,6 +218,15 @@ Dry run:
 keyapi call "/v1/google/search?q=openai" --dry-run
 ```
 
+Write large responses to a file:
+
+```powershell
+keyapi call "/v1/google/search?q=openai&gl=us" --output "result/google.json"
+keyapi call "/v1/google/search?q=openai&gl=us" --output "E:\data\keyapi\google.json"
+```
+
+Quote output paths consistently. Relative output paths are resolved from the current working directory where the command is executed. Parent directories are created automatically.
+
 By default, `keyapi call` prints the original response returned by the KeyAPI endpoint. The CLI does not wrap or rewrite the API response.
 
 ```json
@@ -269,6 +278,7 @@ Workflow rules:
 - Use `--params "k=v"` or `--query "k=v"` when query parameters need to be appended separately.
 - Use `--body-json` for JSON request bodies.
 - Use `--body-raw` for raw text request bodies.
+- Use `--output "path"` when the response body is large or should be saved for later processing.
 - Use `--dry-run` before execution when request construction is uncertain.
 - Use `docs/reference/cli-spec.yaml` as the lightweight machine-readable command contract when integrating the CLI into other tools.
 

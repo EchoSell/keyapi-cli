@@ -9,6 +9,8 @@ import (
 	"io"
 	"net/http"
 	"net/url"
+	"os"
+	"path/filepath"
 	"strings"
 	"time"
 
@@ -29,6 +31,7 @@ func runCall(args []string) error {
 	bodyJSON := fs.String("body-json", "", "raw JSON request body")
 	bodyRaw := fs.String("body-raw", "", "raw text request body")
 	format := fs.String("format", "json", "output format: json, pretty, or raw")
+	output := fs.String("output", "", "write response body to a file")
 	dryRun := fs.Bool("dry-run", false, "print the request without sending it")
 	var queries repeatedFlag
 	fs.Var(&queries, "query", "query parameter as \"k=v\"; may be repeated")
@@ -138,8 +141,20 @@ func runCall(args []string) error {
 		return err
 	}
 
-	if err := printResponse(raw, *format); err != nil {
+	formatted, err := formatResponse(raw, *format)
+	if err != nil {
 		return err
+	}
+	if *output != "" {
+		path, err := writeOutputFile(*output, formatted)
+		if err != nil {
+			return err
+		}
+		if err := printJSON(outputFileResult{Output: path, Bytes: len(formatted)}); err != nil {
+			return err
+		}
+	} else {
+		fmt.Println(string(formatted))
 	}
 	if resp.StatusCode < 200 || resp.StatusCode >= 300 {
 		return httpStatusError{StatusCode: resp.StatusCode, Status: resp.Status}
@@ -147,22 +162,36 @@ func runCall(args []string) error {
 	return nil
 }
 
-func printResponse(raw []byte, format string) error {
+func formatResponse(raw []byte, format string) ([]byte, error) {
 	if format == "raw" {
-		fmt.Println(string(raw))
-		return nil
+		return raw, nil
 	}
 	if format != "json" && format != "pretty" {
-		return fmt.Errorf("unsupported format %q; use pretty, raw, or json", format)
+		return nil, fmt.Errorf("unsupported format %q; use pretty, raw, or json", format)
 	}
 
 	var pretty bytes.Buffer
 	if json.Valid(raw) && json.Indent(&pretty, raw, "", "  ") == nil {
-		fmt.Println(pretty.String())
-		return nil
+		return pretty.Bytes(), nil
 	}
-	fmt.Println(string(raw))
-	return nil
+	return raw, nil
+}
+
+func writeOutputFile(path string, data []byte) (string, error) {
+	if strings.TrimSpace(path) == "" {
+		return "", errors.New("output path cannot be empty")
+	}
+	resolved, err := filepath.Abs(path)
+	if err != nil {
+		return "", err
+	}
+	if err := os.MkdirAll(filepath.Dir(resolved), 0o755); err != nil {
+		return "", err
+	}
+	if err := os.WriteFile(resolved, data, 0o644); err != nil {
+		return "", err
+	}
+	return resolved, nil
 }
 
 type httpStatusError struct {

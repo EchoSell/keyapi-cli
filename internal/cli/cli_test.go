@@ -7,6 +7,7 @@ import (
 	"net/http/httptest"
 	"os"
 	"path/filepath"
+	"strings"
 	"testing"
 )
 
@@ -177,6 +178,58 @@ func TestCallBodyRawAlwaysUsesTextContentType(t *testing.T) {
 	err := runCall([]string{"google/search", "--body-raw", `{"q":"openai"}`})
 	if err != nil {
 		t.Fatal(err)
+	}
+}
+
+func TestCallOutputWritesRelativePathFromWorkingDirectory(t *testing.T) {
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(http.StatusOK)
+		_, _ = w.Write([]byte(`{"code":0,"message":"success","data":{"items":[1,2]}}`))
+	}))
+	defer server.Close()
+
+	writeCallTestConfig(t, server.URL)
+	wd := t.TempDir()
+	t.Chdir(wd)
+
+	err := runCall([]string{"google/search", "--output", filepath.Join("result", "google.json")})
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	raw, err := os.ReadFile(filepath.Join(wd, "result", "google.json"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !json.Valid(raw) {
+		t.Fatalf("expected valid JSON output, got %q", raw)
+	}
+	if !strings.Contains(string(raw), `"items"`) {
+		t.Fatalf("expected response body in output file, got %q", raw)
+	}
+}
+
+func TestCallOutputWritesNon2xxResponseBeforeReturningError(t *testing.T) {
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(http.StatusUnauthorized)
+		_, _ = w.Write([]byte(`{"code":401,"message":"apiKey is null","data":null}`))
+	}))
+	defer server.Close()
+
+	writeCallTestConfig(t, server.URL)
+	wd := t.TempDir()
+	t.Chdir(wd)
+
+	err := runCall([]string{"google/search", "--output", "error.json"})
+	if err == nil {
+		t.Fatal("expected non-2xx error")
+	}
+	raw, readErr := os.ReadFile(filepath.Join(wd, "error.json"))
+	if readErr != nil {
+		t.Fatal(readErr)
+	}
+	if !strings.Contains(string(raw), `"apiKey is null"`) {
+		t.Fatalf("expected error response body in output file, got %q", raw)
 	}
 }
 

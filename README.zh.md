@@ -219,6 +219,15 @@ Dry run：
 keyapi call "/v1/google/search?q=openai" --dry-run
 ```
 
+将大响应写入文件：
+
+```powershell
+keyapi call "/v1/google/search?q=openai&gl=us" --output "result/google.json"
+keyapi call "/v1/google/search?q=openai&gl=us" --output "E:\data\keyapi\google.json"
+```
+
+输出路径统一建议加双引号。相对输出路径会基于执行命令时的当前工作目录解析。父目录不存在时会自动创建。
+
 默认情况下，`keyapi call` 会输出 KeyAPI 接口返回的原始响应。CLI 不会包裹或改写 API 响应。
 
 ```json
@@ -270,6 +279,7 @@ keyapi call "/v1/tiktok/influencer/detail?unique_id=mrbeast"
 - 需要单独追加 query 参数时，使用 `--params "k=v"` 或 `--query "k=v"`。
 - JSON 请求体使用 `--body-json`。
 - 原始文本请求体使用 `--body-raw`。
+- 响应体很大或需要后续处理时，使用 `--output "path"` 保存到文件。
 - 不确定请求构造是否正确时，先使用 `--dry-run`。
 - 将 CLI 集成到其他工具时，可使用 `docs/reference/cli-spec.yaml` 作为轻量机器可读命令契约。
 

@@ -50,4 +50,5 @@ keyapi call "/v1/google/search?q=openai"
 - 需要单独追加 query 参数时，使用 `--params "k=v"` 或 `--query "k=v"`。
 - JSON 请求体使用 `--body-json`。
 - 原始文本请求体使用 `--body-raw`。
+- 需要把响应体写入文件时，使用 `--output "path"`。
 - 不确定请求是否正确时，先使用 `--dry-run`。

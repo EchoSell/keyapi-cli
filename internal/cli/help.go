@@ -136,7 +136,7 @@ When to use:
   Use after endpoint details are known from spec get-endpoint.
 
 Usage:
-  keyapi call <endpoint-or-path-with-query> [--params "k=v"] [--body-raw TEXT] [--method GET] [--body-json JSON]
+  keyapi call <endpoint-or-path-with-query> [--params "k=v"] [--body-raw TEXT] [--method GET] [--body-json JSON] [--output "PATH"]
 
 Parameters:
   endpoint-or-path-with-query: google/search, /v1/google/search?q=openai, or a full KeyAPI URL.
@@ -147,8 +147,10 @@ Parameters:
   --method: HTTP method override.
   --dry-run: Print request JSON without sending.
   --format: json, pretty, or raw. Default is json.
+  --output: Write the response body to a file. Quote the path, for example --output "result/google.json". Relative paths are resolved from the current working directory.
 
 Output:
   Original KeyAPI response JSON by default, formatted JSON with --format pretty, raw response with --format raw.
+  With --output, prints a small JSON object containing the written file path and byte count.
   HTTP non-2xx responses are printed and return a non-zero exit code.`)
 }

@@ -136,7 +136,7 @@ commands:
 
   - name: "keyapi call"
     description: "Execute a KeyAPI endpoint request."
-    usage: "keyapi call <endpoint-or-path-with-query> [--params \"k=v\"] [--body-raw TEXT] [--body-json JSON] [--method METHOD] [--format json|pretty|raw] [--dry-run]"
+    usage: "keyapi call <endpoint-or-path-with-query> [--params \"k=v\"] [--body-raw TEXT] [--body-json JSON] [--method METHOD] [--format json|pretty|raw] [--output \"PATH\"] [--dry-run]"
     required: ["endpoint_or_path"]
     parameters:
       - name: "endpoint_or_path"
@@ -184,4 +184,8 @@ commands:
         default: "json"
         values: ["json", "pretty", "raw"]
         description: "Response output format."
+      - name: "--output"
+        type: "path"
+        required: false
+        description: "Write the response body to a file. Quote the path. Relative paths are resolved from the current working directory. Parent directories are created automatically."
     output: "original_api_response_json_by_default; HTTP non-2xx responses print the response and return a non-zero exit code"

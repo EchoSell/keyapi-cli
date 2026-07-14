@@ -7,6 +7,11 @@ type dryRunRequest struct {
 	Body    interface{}       `json:"body"`
 }
 
+type outputFileResult struct {
+	Output string `json:"output"`
+	Bytes  int    `json:"bytes"`
+}
+
 type configView struct {
 	APIKey     string `json:"api_key"`
 	AuthScheme string `json:"auth_scheme"`
