@@ -45,6 +45,7 @@ CLI 每次都会读取最新的 KeyAPI OpenAPI 文档，并解析返回实时的
 | `keyapi spec list-endpoints <platform...>` | 列出一个或多个平台的接口描述。 | 一个或多个平台名 | 无 | JSON |
 | `keyapi spec list-endpoints all` | 列出全部平台的接口描述。 | `all` | 无 | JSON |
 | `keyapi spec get-endpoint <endpoint-or-path>` | 获取单个接口详情。 | `endpoint-or-path` | `--format json\|pretty` | 默认 JSON |
+| `keyapi schema <endpoint-or-path>` | `keyapi spec get-endpoint` 的别名。 | `endpoint-or-path` | `--format json\|pretty` | 默认 JSON |
 
 ### `spec list-platforms`
 
@@ -157,6 +158,18 @@ keyapi spec get-endpoint google/search --format pretty
 | `description` | 参数说明。 |
 | `schema` | 原始 OpenAPI 参数 schema，会保留 `example`、`default`、`enum` 等元数据。 |
 
+### `schema`
+
+用法：
+
+```powershell
+keyapi schema google/search
+keyapi schema /v1/google/search
+keyapi schema google/search --format pretty
+```
+
+`keyapi schema` 是 `keyapi spec get-endpoint` 的顶层别名。行为、输出和错误处理保持一致。
+
 ## `keyapi call`
 
 `call` 用于执行 KeyAPI 接口请求，默认输出接口原始 JSON 响应。
@@ -247,7 +260,7 @@ HTTP 状态处理：
 列出相关平台的接口描述。
 比较 method、path、summary、description。
 选择 description 最符合需求的接口。
-使用 get-endpoint 查看接口详情。
+使用 schema 或 spec get-endpoint 查看接口详情。
 根据 parameters 和 body_fields 构造 call 命令。
 ```
 

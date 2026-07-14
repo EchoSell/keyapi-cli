@@ -45,6 +45,7 @@ The CLI reads the latest KeyAPI OpenAPI documentation each time and returns real
 | `keyapi spec list-endpoints <platform...>` | List endpoint descriptions for one or more platforms. | One or more platform names | None | JSON |
 | `keyapi spec list-endpoints all` | List endpoint descriptions for all platforms. | `all` | None | JSON |
 | `keyapi spec get-endpoint <endpoint-or-path>` | Get one endpoint's full details. | `endpoint-or-path` | `--format json\|pretty` | JSON by default |
+| `keyapi schema <endpoint-or-path>` | Alias for `keyapi spec get-endpoint`. | `endpoint-or-path` | `--format json\|pretty` | JSON by default |
 
 ### `spec list-platforms`
 
@@ -157,6 +158,18 @@ Parameter fields:
 | `description` | Parameter description. |
 | `schema` | Original OpenAPI parameter schema. Preserves metadata such as `example`, `default`, and `enum`. |
 
+### `schema`
+
+Usage:
+
+```powershell
+keyapi schema google/search
+keyapi schema /v1/google/search
+keyapi schema google/search --format pretty
+```
+
+`keyapi schema` is a top-level alias for `keyapi spec get-endpoint`. Behavior, output, and errors are the same.
+
 ## `keyapi call`
 
 `call` executes a KeyAPI endpoint. Default output is JSON.
@@ -253,7 +266,7 @@ Use this process to choose an endpoint:
 List endpoint descriptions for the relevant platform.
 Compare method, path, summary, and description.
 Choose the endpoint whose description best matches the user request.
-Inspect that endpoint with get-endpoint.
+Inspect that endpoint with schema or spec get-endpoint.
 Use parameters and body_fields to construct the call command.
 ```
 

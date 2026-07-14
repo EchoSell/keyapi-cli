@@ -54,26 +54,38 @@ func runSpec(args []string) error {
 			printSpecShowHelp()
 			return nil
 		}
-		endpointName, format, err := parseTargetAndFormatDefault(args[1:], "keyapi spec get-endpoint <endpoint-or-path> [--format json|pretty]", "json")
-		if err != nil {
-			return err
-		}
-		registry, err := openapi.LoadRegistryForPlatform(platformFromEndpoint(endpointName))
-		if err != nil {
-			return err
-		}
-		endpoint, ok := registry.Find(endpointName)
-		if !ok {
-			return fmt.Errorf("endpoint %q not found; run keyapi spec list-endpoints <platform> to inspect available endpoints", endpointName)
-		}
-		if format == "json" {
-			return printJSON(endpoint)
-		}
-		if format != "pretty" {
-			return fmt.Errorf("unsupported format %q; use pretty or json", format)
-		}
-		return openapi.PrintEndpointDetail(os.Stdout, endpoint)
+		return runEndpointSchema(args[1:], "keyapi spec get-endpoint <endpoint-or-path> [--format json|pretty]")
 	default:
 		return fmt.Errorf("unknown spec subcommand %q", args[0])
 	}
+}
+
+func runSchema(args []string) error {
+	if len(args) == 0 || isHelp(args[0]) {
+		printSchemaHelp()
+		return nil
+	}
+	return runEndpointSchema(args, "keyapi schema <endpoint-or-path> [--format json|pretty]")
+}
+
+func runEndpointSchema(args []string, usage string) error {
+	endpointName, format, err := parseTargetAndFormatDefault(args, usage, "json")
+	if err != nil {
+		return err
+	}
+	registry, err := openapi.LoadRegistryForPlatform(platformFromEndpoint(endpointName))
+	if err != nil {
+		return err
+	}
+	endpoint, ok := registry.Find(endpointName)
+	if !ok {
+		return fmt.Errorf("endpoint %q not found; run keyapi spec list-endpoints <platform> to inspect available endpoints", endpointName)
+	}
+	if format == "json" {
+		return printJSON(endpoint)
+	}
+	if format != "pretty" {
+		return fmt.Errorf("unsupported format %q; use pretty or json", format)
+	}
+	return openapi.PrintEndpointDetail(os.Stdout, endpoint)
 }

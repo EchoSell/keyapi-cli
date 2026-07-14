@@ -13,6 +13,7 @@ KeyAPI CLI 是一个小型命令行工具，用于配置 KeyAPI token、发现 A
 | `keyapi spec list-platforms` | 列出当前可用的 KeyAPI 平台。 |
 | `keyapi spec list-endpoints <platform...\|all>` | 列出一个或多个平台的接口描述。 |
 | `keyapi spec get-endpoint <endpoint-or-path>` | 获取单个接口的方法、路径、描述、参数和 body 字段。 |
+| `keyapi schema <endpoint-or-path>` | `keyapi spec get-endpoint` 的别名。 |
 | `keyapi call <endpoint-or-path>` | 执行 KeyAPI 请求。 |
 
 ## 文档
@@ -29,7 +30,7 @@ KeyAPI CLI 是一个小型命令行工具，用于配置 KeyAPI token、发现 A
 keyapi set token sk_xxx
 keyapi spec list-platforms
 keyapi spec list-endpoints google
-keyapi spec get-endpoint google/search
+keyapi schema google/search
 keyapi call "/v1/google/search?q=openai"
 ```
 
@@ -42,7 +43,7 @@ keyapi call "/v1/google/search?q=openai"
 - `summary`
 - `description`
 
-选择接口后，执行 `get-endpoint`，再根据返回的 `parameters` 和 `body_fields` 构造请求。
+选择接口后，执行 `schema`，再根据返回的 `parameters` 和 `body_fields` 构造请求。
 
 请求构造规则：
 

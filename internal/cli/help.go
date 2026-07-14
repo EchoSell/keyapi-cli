@@ -13,13 +13,14 @@ Usage:
   keyapi spec list-platforms
   keyapi spec list-endpoints <platform...|all>
   keyapi spec get-endpoint <endpoint-or-path>
+  keyapi schema <endpoint-or-path>
   keyapi call <endpoint-or-path> [flags]
 
 Core workflow:
   1. Configure token:    keyapi set token sk_xxx
   2. List platforms:     keyapi spec list-platforms
   3. List endpoints:     keyapi spec list-endpoints tiktok instagram
-  4. Inspect endpoint:   keyapi spec get-endpoint tiktok/influencer/detail
+  4. Inspect endpoint:   keyapi schema tiktok/influencer/detail
   5. Execute request:    keyapi call "/v1/<platform>/<endpoint>?k=v"
 
 Environment:
@@ -54,6 +55,7 @@ Usage:
   keyapi spec list-platforms
   keyapi spec list-endpoints <platform...|all>
   keyapi spec get-endpoint <endpoint-or-path> [--format json|pretty]
+  keyapi schema <endpoint-or-path> [--format json|pretty]
 
 Output:
   JSON by default.
@@ -129,11 +131,28 @@ Output:
   - body_fields: JSON body fields extracted from OpenAPI requestBody`)
 }
 
+func printSchemaHelp() {
+	fmt.Println(`Get details for one endpoint.
+
+When to use:
+  Use after selecting an endpoint from list-endpoints and before calling it.
+
+Usage:
+  keyapi schema <endpoint-or-path> [--format json|pretty]
+
+Parameters:
+  endpoint-or-path: google/search, /v1/google/search, or a full KeyAPI URL.
+  --format: json or pretty. Default is json.
+
+Output:
+  Same as keyapi spec get-endpoint. JSON by default. Fields include method, path, summary, description, parameters, parameters[].schema, and body_fields.`)
+}
+
 func printCallHelp() {
 	fmt.Println(`Call a KeyAPI endpoint by path convention.
 
 When to use:
-  Use after endpoint details are known from spec get-endpoint.
+  Use after endpoint details are known from schema or spec get-endpoint.
 
 Usage:
   keyapi call <endpoint-or-path-with-query> [--params "k=v"] [--body-raw TEXT] [--method GET] [--body-json JSON] [--output "PATH"]

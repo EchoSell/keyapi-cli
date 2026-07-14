@@ -13,6 +13,7 @@ KeyAPI CLI is a small command line tool for configuring a KeyAPI token, discover
 | `keyapi spec list-platforms` | List platforms with available KeyAPI endpoints. |
 | `keyapi spec list-endpoints <platform...\|all>` | List endpoint descriptions for one or more platforms. |
 | `keyapi spec get-endpoint <endpoint-or-path>` | Get one endpoint's method, path, description, parameters, and body fields. |
+| `keyapi schema <endpoint-or-path>` | Alias for `keyapi spec get-endpoint`. |
 | `keyapi call <endpoint-or-path>` | Execute a KeyAPI request. |
 
 ## Documents
@@ -30,7 +31,7 @@ KeyAPI CLI is a small command line tool for configuring a KeyAPI token, discover
 keyapi set token sk_xxx
 keyapi spec list-platforms
 keyapi spec list-endpoints google
-keyapi spec get-endpoint google/search
+keyapi schema google/search
 keyapi call "/v1/google/search?q=openai"
 ```
 
@@ -43,7 +44,7 @@ To choose an endpoint, list endpoint descriptions for the target platform and co
 - `summary`
 - `description`
 
-After selecting an endpoint, run `get-endpoint` and use its `parameters` and `body_fields` to construct the request.
+After selecting an endpoint, run `schema` and use its `parameters` and `body_fields` to construct the request.
 
 Request construction rules:
 

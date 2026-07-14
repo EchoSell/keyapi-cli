@@ -26,6 +26,34 @@ Download the binary for your operating system from the GitHub Releases page, the
 
 End users do not need Go installed. A compiled binary is enough.
 
+### Add to PATH
+
+You can run the binary directly from its current directory:
+
+```powershell
+.\keyapi.exe --help
+```
+
+To use `keyapi` from any directory, add the directory containing the binary to your `PATH`.
+
+Windows example:
+
+```powershell
+# Example: keyapi.exe is stored in C:\Tools\keyapi
+$env:Path += ";C:\Tools\keyapi"
+keyapi --help
+```
+
+The command above only updates the current PowerShell session. For permanent use, add the directory to the system or user `PATH` environment variable.
+
+Linux or macOS example:
+
+```bash
+chmod +x keyapi
+sudo mv keyapi /usr/local/bin/keyapi
+keyapi --help
+```
+
 ### Build from Source
 
 Requirements:
@@ -41,7 +69,7 @@ go build -buildvcs=false -o keyapi.exe .
 Linux or macOS:
 
 ```bash
-go build -buildvcs=false -o keyapi .
+go build -buildvcs=false -o keyapi-cli .
 ```
 
 The CLI version is defined in `internal/cli/help.go`. Update the `version` constant there when releasing a new version.
@@ -52,7 +80,7 @@ The CLI version is defined in `internal/cli/help.go`. Update the `version` const
 .\keyapi.exe set token sk_xxx
 .\keyapi.exe spec list-platforms
 .\keyapi.exe spec list-endpoints google
-.\keyapi.exe spec get-endpoint google/search
+.\keyapi.exe schema google/search
 .\keyapi.exe call "/v1/google/search?q=openai&gl=us&hl=en"
 ```
 
@@ -67,6 +95,7 @@ The CLI version is defined in `internal/cli/help.go`. Update the `version` const
 | `keyapi spec list-platforms` | List platforms that currently have KeyAPI endpoints. |
 | `keyapi spec list-endpoints <platform...\|all>` | List endpoint descriptions for one or more platforms. |
 | `keyapi spec get-endpoint <endpoint-or-path>` | Get method, path, description, parameters, and body fields for one endpoint. |
+| `keyapi schema <endpoint-or-path>` | Alias for `keyapi spec get-endpoint`. |
 | `keyapi call <endpoint-or-path>` | Execute a KeyAPI request. |
 
 Every command supports help:
@@ -81,6 +110,7 @@ keyapi spec --help
 keyapi spec list-platforms --help
 keyapi spec list-endpoints --help
 keyapi spec get-endpoint --help
+keyapi schema --help
 keyapi call --help
 ```
 
@@ -92,14 +122,14 @@ Endpoint selection guidance:
 To choose an API endpoint, first list endpoint descriptions for the relevant platform.
 Read each endpoint's method, path, summary, and description.
 Select the endpoint whose description best matches the user request.
-Then call get-endpoint to inspect parameters before executing the request.
+Then call schema to inspect parameters before executing the request.
 ```
 
 Example:
 
 ```powershell
 keyapi spec list-endpoints tiktok
-keyapi spec get-endpoint tiktok/influencer/detail
+keyapi schema tiktok/influencer/detail
 keyapi call "/v1/tiktok/influencer/detail?unique_id=mrbeast"
 ```
 
@@ -137,7 +167,7 @@ Field meanings:
 | `summary` | Short endpoint title from docs or OpenAPI. |
 | `description` | Longer endpoint description. Use this to decide whether the endpoint matches the task. |
 
-`keyapi spec get-endpoint google/search` returns:
+`keyapi schema google/search` and `keyapi spec get-endpoint google/search` return:
 
 | Field | Meaning |
 | --- | --- |
@@ -265,7 +295,7 @@ Example:
 ```powershell
 keyapi spec list-platforms
 keyapi spec list-endpoints tiktok
-keyapi spec get-endpoint tiktok/influencer/detail
+keyapi schema tiktok/influencer/detail
 keyapi call "/v1/tiktok/influencer/detail?unique_id=mrbeast" --dry-run
 keyapi call "/v1/tiktok/influencer/detail?unique_id=mrbeast"
 ```

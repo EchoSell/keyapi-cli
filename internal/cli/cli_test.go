@@ -143,6 +143,26 @@ func TestRunTopLevelConfigSetAndGet(t *testing.T) {
 	}
 }
 
+func TestRunSchemaHelp(t *testing.T) {
+	if err := Run([]string{"schema", "--help"}); err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestRunSchemaRejectsMissingEndpoint(t *testing.T) {
+	err := Run([]string{"schema"})
+	if err != nil {
+		t.Fatalf("schema help should not fail, got %v", err)
+	}
+}
+
+func TestRunSchemaRejectsExtraTarget(t *testing.T) {
+	err := Run([]string{"schema", "google/search", "extra"})
+	if err == nil {
+		t.Fatal("expected schema usage error")
+	}
+}
+
 func TestCallBodyJSONUsesJSONContentType(t *testing.T) {
 	server := newCallTestServer(t, func(r *http.Request, body string) {
 		if got := r.Header.Get("Content-Type"); got != "application/json" {

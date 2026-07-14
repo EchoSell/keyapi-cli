@@ -23,6 +23,8 @@ func Run(args []string) error {
 		return runConfig(args[1:])
 	case "spec":
 		return runSpec(args[1:])
+	case "schema":
+		return runSchema(args[1:])
 	case "call":
 		return runCall(args[1:])
 	default:

@@ -27,6 +27,34 @@ CLI 每次都会读取最新的 KeyAPI OpenAPI 规范，并提供最新的接口
 
 普通用户不需要安装 Go。编译好的二进制文件即可使用。
 
+### 添加到 PATH
+
+你可以在二进制文件所在目录直接运行：
+
+```powershell
+.\keyapi.exe --help
+```
+
+如果希望在任意目录直接使用 `keyapi` 命令，需要将二进制文件所在目录加入 `PATH` 环境变量。
+
+Windows 示例：
+
+```powershell
+# 示例：keyapi.exe 放在 C:\Tools\keyapi
+$env:Path += ";C:\Tools\keyapi"
+keyapi --help
+```
+
+上面的命令只会影响当前 PowerShell 会话。长期使用时，请将该目录添加到系统或用户的 `PATH` 环境变量中。
+
+Linux 或 macOS 示例：
+
+```bash
+chmod +x keyapi
+sudo mv keyapi /usr/local/bin/keyapi
+keyapi --help
+```
+
 ### 从源码构建
 
 要求：
@@ -42,7 +70,7 @@ go build -buildvcs=false -o keyapi.exe .
 Linux 或 macOS：
 
 ```bash
-go build -buildvcs=false -o keyapi .
+go build -buildvcs=false -o keyapi-cli .
 ```
 
 CLI 版本号定义在 `internal/cli/help.go` 中。发布新版本时，修改其中的 `version` 常量。
@@ -53,7 +81,7 @@ CLI 版本号定义在 `internal/cli/help.go` 中。发布新版本时，修改�
 .\keyapi.exe set token sk_xxx
 .\keyapi.exe spec list-platforms
 .\keyapi.exe spec list-endpoints google
-.\keyapi.exe spec get-endpoint google/search
+.\keyapi.exe schema google/search
 .\keyapi.exe call "/v1/google/search?q=openai&gl=us&hl=en"
 ```
 
@@ -68,6 +96,7 @@ CLI 版本号定义在 `internal/cli/help.go` 中。发布新版本时，修改�
 | `keyapi spec list-platforms` | 列出当前拥有 KeyAPI 接口的平台。 |
 | `keyapi spec list-endpoints <platform...\|all>` | 列出一个或多个平台的接口描述。 |
 | `keyapi spec get-endpoint <endpoint-or-path>` | 获取单个接口的方法、路径、描述、参数和 body 字段。 |
+| `keyapi schema <endpoint-or-path>` | `keyapi spec get-endpoint` 的别名。 |
 | `keyapi call <endpoint-or-path>` | 执行 KeyAPI 请求。 |
 
 每个命令都支持 help：
@@ -82,6 +111,7 @@ keyapi spec --help
 keyapi spec list-platforms --help
 keyapi spec list-endpoints --help
 keyapi spec get-endpoint --help
+keyapi schema --help
 keyapi call --help
 ```
 
@@ -93,14 +123,14 @@ keyapi call --help
 选择 API 接口时，先列出相关平台的接口描述。
 阅读每个接口的 method、path、summary 和 description。
 选择 description 最符合用户需求的接口。
-然后调用 get-endpoint 查看参数，再执行请求。
+然后调用 schema 查看参数，再执行请求。
 ```
 
 示例：
 
 ```powershell
 keyapi spec list-endpoints tiktok
-keyapi spec get-endpoint tiktok/influencer/detail
+keyapi schema tiktok/influencer/detail
 keyapi call "/v1/tiktok/influencer/detail?unique_id=mrbeast"
 ```
 
@@ -138,7 +168,7 @@ keyapi call "/v1/tiktok/influencer/detail?unique_id=mrbeast"
 | `summary` | 来自文档或 OpenAPI 的接口简短标题。 |
 | `description` | 更详细的接口描述，用于判断接口是否符合任务。 |
 
-`keyapi spec get-endpoint google/search` 返回：
+`keyapi schema google/search` 和 `keyapi spec get-endpoint google/search` 返回：
 
 | 字段 | 含义 |
 | --- | --- |
@@ -266,7 +296,7 @@ keyapi call "/v1/google/search?q=openai&gl=us" --output "E:\data\keyapi\google.j
 ```powershell
 keyapi spec list-platforms
 keyapi spec list-endpoints tiktok
-keyapi spec get-endpoint tiktok/influencer/detail
+keyapi schema tiktok/influencer/detail
 keyapi call "/v1/tiktok/influencer/detail?unique_id=mrbeast" --dry-run
 keyapi call "/v1/tiktok/influencer/detail?unique_id=mrbeast"
 ```
