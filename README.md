@@ -213,7 +213,7 @@ keyapi call --help
 
 ### Save Large Responses
 
-Use `--output "path"` to write a response body to a file:
+Some endpoints return large JSON responses, such as product details, images, SKU lists, or description fields. Use `--output "path"` to write the full response body to a file instead of printing it in the terminal:
 
 ```powershell
 keyapi call "/v1/google/search?q=openai&gl=us" --output "outputs/google-search.json"

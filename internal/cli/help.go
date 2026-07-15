@@ -193,6 +193,48 @@ Output:
   - parameters[].schema: original OpenAPI schema, including example/default/enum when present
   - body_fields: JSON body fields extracted from OpenAPI requestBody
 
+Default JSON shape:
+  {
+    "platform": "google",
+    "spec_name": "google.openapi",
+    "method": "GET",
+    "path": "/v1/google/search",
+    "summary": "Search",
+    "description": "Search Google web results.",
+    "parameters": [
+      {
+        "name": "q",
+        "in": "query",
+        "type": "string",
+        "required": true,
+        "description": "Search keyword.",
+        "schema": {
+          "type": "string",
+          "example": "openai"
+        }
+      }
+    ],
+    "body_fields": []
+  }
+
+Field meanings:
+  platform: Platform name.
+  spec_name: Source OpenAPI spec name.
+  method: HTTP request method.
+  path: API request path.
+  summary: Short endpoint title.
+  description: Detailed endpoint description.
+  parameters: OpenAPI-style request parameters.
+  body_fields: JSON request body fields extracted from OpenAPI requestBody.
+
+Parameter field meanings:
+  name: Parameter name.
+  in: Parameter location, such as query, path, or header.
+  type: Schema type.
+  required: Whether the parameter is required.
+  description: Parameter description.
+  schema: Original OpenAPI parameter schema, preserving example/default/enum.
+
 Examples:
   keyapi spec get-endpoint google/search
   keyapi spec get-endpoint /v1/google/search --format pretty`)
@@ -221,6 +263,48 @@ Flags:
 Output:
   Same as keyapi spec get-endpoint. JSON by default. Fields include method,
   path, summary, description, parameters, parameters[].schema, and body_fields.
+
+Default JSON shape:
+  {
+    "platform": "google",
+    "spec_name": "google.openapi",
+    "method": "GET",
+    "path": "/v1/google/search",
+    "summary": "Search",
+    "description": "Search Google web results.",
+    "parameters": [
+      {
+        "name": "q",
+        "in": "query",
+        "type": "string",
+        "required": true,
+        "description": "Search keyword.",
+        "schema": {
+          "type": "string",
+          "example": "openai"
+        }
+      }
+    ],
+    "body_fields": []
+  }
+
+Field meanings:
+  platform: Platform name.
+  spec_name: Source OpenAPI spec name.
+  method: HTTP request method.
+  path: API request path.
+  summary: Short endpoint title.
+  description: Detailed endpoint description.
+  parameters: OpenAPI-style request parameters.
+  body_fields: JSON request body fields extracted from OpenAPI requestBody.
+
+Parameter field meanings:
+  name: Parameter name.
+  in: Parameter location, such as query, path, or header.
+  type: Schema type.
+  required: Whether the parameter is required.
+  description: Parameter description.
+  schema: Original OpenAPI parameter schema, preserving example/default/enum.
 
 Examples:
   keyapi schema google/search
@@ -270,6 +354,11 @@ Flags:
     Write the response body to a file. Quote the path. Relative paths are
     resolved from the current working directory.
 
+Large responses:
+  Some endpoints return large JSON responses such as product details, image
+  lists, SKU lists, or description blocks. Use --output "path" to save the
+  full response to a file instead of printing it in the terminal.
+
 Output:
   Original KeyAPI response body by default. KeyAPI status fields such as code,
   message, and data are preserved. With --output, the CLI prints a small JSON
@@ -278,6 +367,18 @@ Output:
 Exit behavior:
   HTTP 2xx returns exit code 0.
   HTTP non-2xx prints or writes the response body and returns a non-zero exit code.
+
+Common KeyAPI response codes:
+  code  message                              meaning
+  0     success                              Request succeeded.
+  400   Missing required parameter: <name>   A required parameter is missing or invalid.
+  401   apiKey is null                       API key is missing.
+  402   apiKey quota is not enough           API key quota is insufficient.
+  429   qps limit exceeded                   Request rate exceeded the QPS limit.
+  500   Internal server error                Server-side error.
+
+These fields and status codes are returned by KeyAPI itself. The CLI preserves
+the original API response body.
 
 Examples:
   keyapi call "/v1/google/search?q=openai&gl=us&hl=en"

@@ -5,6 +5,8 @@ import (
 )
 
 func Run(args []string) error {
+	configureConsoleOutput()
+
 	if len(args) == 0 {
 		printRootHelp()
 		return nil

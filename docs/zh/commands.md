@@ -200,7 +200,7 @@ https://api.keyapi.ai/v1/google/search?q=openai&gl=us
 | `--token <value>` | 否 | 否 | `--api-key` 的别名。 |
 | `--dry-run` | 否 | 否 | 打印最终请求 JSON，不发送请求。 |
 | `--format json\|pretty\|raw` | 否 | 否 | 响应输出格式，默认 `json`。 |
-| `--output "path"` | 否 | 否 | 将响应体写入文件。路径需要加双引号。相对路径基于当前工作目录解析。父目录不存在时会自动创建。 |
+| `--output "path"` | 否 | 否 | 将响应体写入文件。路径需要加双引号。相对路径基于当前工作目录解析。父目录不存在时会自动创建。推荐用于较大的 JSON 响应。 |
 
 `keyapi call` 会直接输出 KeyAPI 接口返回的原始响应，保持与 KeyAPI 接口一致。
 
@@ -232,6 +232,8 @@ https://api.keyapi.ai/v1/google/search?q=openai&gl=us
 ```powershell
 keyapi call "/v1/google/search?q=openai&gl=us" --output "result/google.json"
 ```
+
+部分接口会返回较大的 JSON，例如商品详情、图片列表、SKU 列表或描述字段。建议使用 `--output "path"` 将完整响应保存到文件，避免直接在终端中输出大量内容。
 
 使用 `--output` 时，响应体会写入文件，终端只输出包含最终文件路径和字节数的小 JSON。HTTP 非 `2xx` 响应也会先写入文件，然后命令以非零退出码结束。
 

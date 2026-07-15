@@ -213,7 +213,7 @@ keyapi call --help
 
 ### 保存大响应
 
-使用 `--output "path"` 将响应体写入文件：
+部分接口会返回较大的 JSON，例如商品详情、图片列表、SKU 列表或描述字段。建议使用 `--output "path"` 将完整响应体写入文件，避免直接在终端中输出大量内容：
 
 ```powershell
 keyapi call "/v1/google/search?q=openai&gl=us" --output "outputs/google-search.json"

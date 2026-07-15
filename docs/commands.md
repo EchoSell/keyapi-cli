@@ -200,7 +200,7 @@ https://api.keyapi.ai/v1/google/search?q=openai&gl=us
 | `--token <value>` | No | No | Alias for `--api-key`. |
 | `--dry-run` | No | No | Print the final request as JSON without sending it. |
 | `--format json\|pretty\|raw` | No | No | Select response output format. Default is `json`. |
-| `--output "path"` | No | No | Write the response body to a file. Quote the path. Relative paths are resolved from the current working directory. Parent directories are created automatically. |
+| `--output "path"` | No | No | Write the response body to a file. Quote the path. Relative paths are resolved from the current working directory. Parent directories are created automatically. Recommended for large JSON responses. |
 
 Default output:
 
@@ -238,6 +238,8 @@ File output:
 ```powershell
 keyapi call "/v1/google/search?q=openai&gl=us" --output "result/google.json"
 ```
+
+Some endpoints return large JSON responses such as product details, image lists, SKU lists, or description blocks. Use `--output "path"` to save the full response to a file instead of printing it in the terminal.
 
 When `--output` is used, the response body is written to the file and the terminal prints a small JSON object containing the resolved output path and byte count. HTTP non-`2xx` responses are still written before the command exits with a non-zero code.
 
