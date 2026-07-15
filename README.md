@@ -45,7 +45,7 @@ keyapi --help
 Copy this prompt into an AI assistant such as Claude Code, Codex, Cursor, or Trae if you want it to install the release binary for you:
 
 ```text
-Help me install KeyAPI CLI from https://github.com/EchoSell/keyapi-cli/releases. Download the binary for my operating system, make it available as keyapi on PATH, and verify it with keyapi --help.
+Install the latest KeyAPI CLI from https://github.com/EchoSell/keyapi-cli/releases by downloading the binary for the current platform, configuring it so the `keyapi` command is available from the terminal, and verifying the installation with `keyapi --help`.
 ```
 
 ### Build from Source
@@ -72,7 +72,7 @@ go build -buildvcs=false -o keyapi .
 Copy this prompt into an AI assistant such as Claude Code, Codex, Cursor, or Trae if you want it to build the project from source:
 
 ```text
-Help me install this project: https://github.com/EchoSell/keyapi-cli.git. After installation, compile it into an executable file and make the keyapi command available on PATH.
+Install KeyAPI CLI from source: https://github.com/EchoSell/keyapi-cli.git. Build an executable for the current system, configure it so the `keyapi` command is available from the terminal, and verify the installation by running `keyapi --help`.
 ```
 
 After building, continue with the PATH setup section below.
