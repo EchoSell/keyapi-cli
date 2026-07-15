@@ -257,8 +257,8 @@ Use `--params "k=v"` or `--query "k=v"` when query parameters are easier to appe
 
 | File | Purpose |
 | --- | --- |
-| [docs/index.md](https://github.com/EchoSell/keyapi-cli/blob/main/docs/index.md) | Documentation entry point. |
-| [docs/commands.md](https://github.com/EchoSell/keyapi-cli/blob/main/docs/commands.md) | Full command and parameter reference. |
-| [docs/config.md](https://github.com/EchoSell/keyapi-cli/blob/main/docs/config.md) | Config file and environment variables. |
-| [README.zh.md](https://github.com/EchoSell/keyapi-cli/blob/main/README.zh.md) | Chinese README. |
-| [docs/zh/index.md](https://github.com/EchoSell/keyapi-cli/blob/main/docs/zh/index.md) | Chinese documentation entry point. |
+| [docs/index.md](docs/index.md) | Documentation entry point. |
+| [docs/commands.md](docs/commands.md) | Full command and parameter reference. |
+| [docs/config.md](docs/config.md) | Config file and environment variables. |
+| [README.zh.md](README.zh.md) | Chinese README. |
+| [docs/zh/index.md](docs/zh/index.md) | Chinese documentation entry point. |

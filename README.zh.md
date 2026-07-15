@@ -257,8 +257,8 @@ keyapi call "/v1/google/search?q=openai&gl=us"
 
 | 文件 | 作用 |
 | --- | --- |
-| [docs/index.md](https://github.com/EchoSell/keyapi-cli/blob/main/docs/index.md) | 文档入口。 |
-| [docs/commands.md](https://github.com/EchoSell/keyapi-cli/blob/main/docs/commands.md) | 完整命令和参数参考。 |
-| [docs/config.md](https://github.com/EchoSell/keyapi-cli/blob/main/docs/config.md) | 配置文件和环境变量说明。 |
-| [README.md](https://github.com/EchoSell/keyapi-cli/blob/main/README.md) | 英文 README。 |
-| [docs/zh/index.md](https://github.com/EchoSell/keyapi-cli/blob/main/docs/zh/index.md) | 中文文档入口。 |
+| [docs/index.md](docs/index.md) | 文档入口。 |
+| [docs/commands.md](docs/commands.md) | 完整命令和参数参考。 |
+| [docs/config.md](docs/config.md) | 配置文件和环境变量说明。 |
+| [README.md](README.md) | 英文 README。 |
+| [docs/zh/index.md](docs/zh/index.md) | 中文文档入口。 |
