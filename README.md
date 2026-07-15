@@ -1,40 +1,85 @@
-﻿# KeyAPI CLI
+# KeyAPI CLI
 
 ---
-[中文版](https://github.com/EchoSell/keyapi-cli/blob/main/README.zh.md) | [English](https://github.com/EchoSell/keyapi-cli/blob/main/README.md)
 
-KeyAPI CLI is a lightweight command line client for the [KeyAPI](https://keyapi.ai) platform. It helps configure authentication, discover available API platforms, inspect endpoint descriptions and parameters, and call APIs without writing request code.
+[Chinese](https://github.com/EchoSell/keyapi-cli/blob/main/README.zh.md) | [English](https://github.com/EchoSell/keyapi-cli/blob/main/README.md)
 
-The CLI focuses on the core workflow users need:
+KeyAPI CLI is a lightweight command line client for the [KeyAPI](https://keyapi.ai) platform. It helps you configure authentication, discover supported API platforms, inspect endpoint schemas, and call APIs without writing request code.
 
-- one command group for configuration
-- one command group for API discovery
-- one command for API execution
+## Why KeyAPI CLI?
+
+KeyAPI provides many APIs across platforms such as Google, TikTok, Instagram, and more. When a project uses many endpoints, manually writing and maintaining request code can become repetitive.
+
+KeyAPI CLI provides one consistent entry point:
+
+- configure your API token once
+- list supported platforms
+- list endpoints under each platform
+- inspect endpoint methods, paths, descriptions, parameters, and request body fields
+- execute API requests from the terminal
+- save large responses to files
+
+The CLI reads the latest KeyAPI OpenAPI documentation when endpoint details are requested, so endpoint descriptions and schemas stay aligned with the current KeyAPI API documentation.
+
+## Features
+
+- Simple configuration commands: `keyapi set`, `keyapi get`, `keyapi show`, `keyapi clear`
+- API discovery commands: `keyapi spec list-platforms`, `keyapi spec list-endpoints`, `keyapi schema`
+- One request command: `keyapi call`
 - JSON output by default for `spec` and `call`
-
-The CLI always fetches the latest KeyAPI OpenAPI specification and provides up-to-date endpoint details, allowing you to review request methods, parameters, and capabilities before making API calls.
+- Built-in `--help` output designed for humans, scripts, and agents
+- `--dry-run` support before sending requests
+- `--output "path"` support for large responses
 
 ## Installation
 
-### Download a Release
+### Install from Release
 
-Download the binary for your operating system from the GitHub Releases page, then run:
-
+1. Open the [GitHub Releases](https://github.com/EchoSell/keyapi-cli/releases) page.
+2. Download the binary for your operating system.
 ```powershell
-.\keyapi.exe --help
+cd ~/keyapi-cli
+keyapi --help
 ```
 
-End users do not need Go installed. A compiled binary is enough.
+Copy this prompt into an AI assistant such as Claude Code, Codex, Cursor, or Trae if you want it to install the release binary for you:
 
-### Add to PATH
-
-You can run the binary directly from its current directory:
-
-```powershell
-.\keyapi.exe --help
+```text
+Help me install KeyAPI CLI from https://github.com/EchoSell/keyapi-cli/releases. Download the binary for my operating system, make it available as keyapi on PATH, and verify it with keyapi --help.
 ```
 
-To use `keyapi` from any directory, add the directory containing the binary to your `PATH`.
+### Build from Source
+
+Requires Go `v1.22` or later.
+
+Clone the repository and build the executable:
+
+```powershell
+git clone https://github.com/EchoSell/keyapi-cli.git
+cd keyapi-cli
+go build -buildvcs=false -o keyapi.exe .
+```
+
+On Linux or macOS, build with:
+
+```bash
+git clone https://github.com/EchoSell/keyapi-cli.git
+cd keyapi-cli
+go build -buildvcs=false -o keyapi .
+```
+
+
+Copy this prompt into an AI assistant such as Claude Code, Codex, Cursor, or Trae if you want it to build the project from source:
+
+```text
+Help me install this project: https://github.com/EchoSell/keyapi-cli.git. After installation, compile it into an executable file and make the keyapi command available on PATH.
+```
+
+After building, continue with the PATH setup section below.
+
+### Make keyapi available on PATH
+
+After installing or building the binary, place it in a directory that is available on `PATH`.
 
 Windows example:
 
@@ -54,58 +99,83 @@ sudo mv keyapi /usr/local/bin/keyapi
 keyapi --help
 ```
 
-### Build from Source
-
-Requirements:
-
-- Go 1.22 or later
-
-Windows:
-
-```powershell
-go build -buildvcs=false -o keyapi.exe .
-```
-
-Linux or macOS:
-
-```bash
-go build -buildvcs=false -o keyapi-cli .
-```
-
-The CLI version is defined in `internal/cli/help.go`. Update the `version` constant there when releasing a new version.
-
 ## Quick Start
 
+Configure your KeyAPI token:
+
 ```powershell
-.\keyapi.exe set token sk_xxx
-.\keyapi.exe spec list-platforms
-.\keyapi.exe spec list-endpoints google
-.\keyapi.exe schema google/search
-.\keyapi.exe call "/v1/google/search?q=openai&gl=us&hl=en"
+keyapi set token sk_xxx
 ```
 
-## Core Commands
+Check the current configuration:
+
+```powershell
+keyapi show
+```
+
+List supported platforms:
+
+```powershell
+keyapi spec list-platforms
+```
+
+List endpoints for a platform:
+
+```powershell
+keyapi spec list-endpoints google
+```
+
+Inspect an endpoint before calling it:
+
+```powershell
+keyapi schema google/search
+```
+
+Dry-run a request:
+
+```powershell
+keyapi call "/v1/google/search?q=openai&gl=us&hl=en" --dry-run
+```
+
+Execute the request:
+
+```powershell
+keyapi call "/v1/google/search?q=openai&gl=us&hl=en"
+```
+
+Save a large response:
+
+```powershell
+keyapi call "/v1/google/search?q=openai&gl=us&hl=en" --output "google-search.json"
+```
+
+Clear the saved token when needed:
+
+```powershell
+keyapi clear token
+```
+
+## Commands
 
 | Command | Purpose |
 | --- | --- |
-| `keyapi set <key> <value>` | Save local configuration, including token and docs language. |
+| `keyapi --help` | Show the main help, recommended order, and command help entry points. |
+| `keyapi set token <value>` | Save the API token locally. |
+| `keyapi set language <en\|zh>` | Set OpenAPI documentation language for endpoint descriptions. |
 | `keyapi get <key>` | Read one local configuration value. |
 | `keyapi show` | Show current local configuration. |
 | `keyapi clear <key>` | Clear one local configuration value. |
-| `keyapi spec list-platforms` | List platforms that currently have KeyAPI endpoints. |
-| `keyapi spec list-endpoints <platform...\|all>` | List endpoint descriptions for one or more platforms. |
-| `keyapi spec get-endpoint <endpoint-or-path>` | Get method, path, description, parameters, and body fields for one endpoint. |
-| `keyapi schema <endpoint-or-path>` | Alias for `keyapi spec get-endpoint`. |
+| `keyapi spec list-platforms` | Return a JSON array of supported platforms. |
+| `keyapi spec list-endpoints <platform...\|all>` | Return endpoint summaries for one or more platforms. |
+| `keyapi spec get-endpoint <endpoint-or-path>` | Return method, path, description, parameters, and body fields for one endpoint. |
+| `keyapi schema <endpoint-or-path>` | Short alias for `keyapi spec get-endpoint`. |
 | `keyapi call <endpoint-or-path>` | Execute a KeyAPI request. |
 
-Every command supports help:
+Every command supports `--help`:
 
 ```powershell
 keyapi --help
 keyapi set --help
-keyapi get --help
-keyapi show --help
-keyapi clear --help
 keyapi spec --help
 keyapi spec list-platforms --help
 keyapi spec list-endpoints --help
@@ -114,26 +184,9 @@ keyapi schema --help
 keyapi call --help
 ```
 
-## API Discovery
+## Advanced Usage
 
-Endpoint selection guidance:
-
-```text
-To choose an API endpoint, first list endpoint descriptions for the relevant platform.
-Read each endpoint's method, path, summary, and description.
-Select the endpoint whose description best matches the user request.
-Then call schema to inspect parameters before executing the request.
-```
-
-Example:
-
-```powershell
-keyapi spec list-endpoints tiktok
-keyapi schema tiktok/influencer/detail
-keyapi call "/v1/tiktok/influencer/detail?unique_id=mrbeast"
-```
-
-## JSON Output
+### JSON Output
 
 `spec` and `call` commands return JSON by default.
 
@@ -158,169 +211,54 @@ keyapi call "/v1/tiktok/influencer/detail?unique_id=mrbeast"
 }
 ```
 
-Field meanings:
+### Save Large Responses
 
-| Field | Meaning |
-| --- | --- |
-| `method` | HTTP request method, such as `GET` or `POST`. |
-| `path` | API request path under `https://api.keyapi.ai`. |
-| `summary` | Short endpoint title from docs or OpenAPI. |
-| `description` | Longer endpoint description. Use this to decide whether the endpoint matches the task. |
-
-`keyapi schema google/search` and `keyapi spec get-endpoint google/search` return:
-
-| Field | Meaning |
-| --- | --- |
-| `platform` | Platform name. |
-| `spec_name` | Source OpenAPI spec name. |
-| `method` | HTTP request method. |
-| `path` | API request path. |
-| `summary` | Short endpoint title. |
-| `description` | Detailed endpoint description. |
-| `parameters` | OpenAPI-style request parameters. |
-| `body_fields` | JSON body fields extracted from OpenAPI `requestBody`. |
-
-Each item in `parameters` contains:
-
-| Field | Meaning |
-| --- | --- |
-| `name` | Parameter name. |
-| `in` | Parameter location, such as `query`, `path`, or `header`. |
-| `type` | Parameter schema type. |
-| `required` | Whether the parameter is required. |
-| `description` | Parameter description. |
-| `schema` | Original OpenAPI parameter schema. Preserves metadata such as `example`, `default`, and `enum` when provided by the spec. |
-
-## Calling APIs
-
-Use `keyapi call` after inspecting endpoint details.
+Use `--output "path"` to write a response body to a file:
 
 ```powershell
-keyapi call <endpoint-or-path> [flags]
+keyapi call "/v1/google/search?q=openai&gl=us" --output "outputs/google-search.json"
 ```
 
-Endpoint formats:
+Relative output paths are resolved from the current working directory.
+
+### Dry Run
+
+Use `--dry-run` to print the request without sending it:
 
 ```powershell
-keyapi call google/search
-keyapi call "/v1/google/search?q=openai&gl=us"
-keyapi call "https://api.keyapi.ai/v1/google/search?q=openai&gl=us"
+keyapi call "/v1/google/search?q=openai&gl=us" --dry-run
 ```
 
-Query parameters:
+### Request Body
+
+Use `--body-json` for JSON request bodies:
+
+```powershell
+keyapi call "/v1/example/post-endpoint" --method POST --body-json '{"page":1,"verified":true}'
+```
+
+Use `--body-raw` for raw text request bodies:
+
+```powershell
+keyapi call "/v1/example/text-endpoint" --method POST --body-raw "plain text"
+```
+
+For GET endpoints, prefer putting query parameters directly in the endpoint path:
 
 ```powershell
 keyapi call "/v1/google/search?q=openai&gl=us"
-keyapi call "/v1/tiktok/shop/product-search?keyword=hot%20sales&region=US"
-keyapi call /v1/google/search --params "q=openai" --params "gl=us"
 ```
 
-For GET endpoints, prefer putting query parameters directly in the endpoint path. Use `--params "k=v"` or `--query "k=v"` when parameters are easier to append programmatically.
-
-Raw text body:
-
-```powershell
-keyapi call some/text/endpoint --body-raw 'plain text body'
-```
-
-`--body-raw` sends the body exactly as provided with `Content-Type: text/plain; charset=utf-8`.
-
-JSON body:
-
-```powershell
-keyapi call tiktok/shop/product-search --body-json "{\"keyword\":\"dress\",\"region\":\"US\"}"
-keyapi call tiktok/shop/product-search --body-json '{"timeRange":7,"countryCode":"US","page":1,"limit":100}'
-```
-
-`--body-json` must be valid JSON and is sent with `Content-Type: application/json`. Invalid JSON fails before the request is sent.
-
-In PowerShell, wrap JSON with single quotes:
-
-```powershell
-keyapi call tiktok/shop/product-search --body-json '{"page":1,"verified":true}'
-```
-
-If PowerShell strips JSON double quotes before they reach the executable, the CLI normalizes common object forms such as `{page:1,verified:true}` back to valid JSON.
-
-Dry run:
-
-```powershell
-keyapi call "/v1/google/search?q=openai" --dry-run
-```
-
-Write large responses to a file:
-
-```powershell
-keyapi call "/v1/google/search?q=openai&gl=us" --output "result/google.json"
-keyapi call "/v1/google/search?q=openai&gl=us" --output "E:\data\keyapi\google.json"
-```
-
-Quote output paths consistently. Relative output paths are resolved from the current working directory where the command is executed. Parent directories are created automatically.
-
-By default, `keyapi call` prints the original response returned by the KeyAPI endpoint. The CLI does not wrap or rewrite the API response.
-
-```json
-{
-  "code": 0,
-  "message": "success",
-  "data": {}
-}
-```
-
-Common KeyAPI response codes:
-
-| Code | Message | Meaning |
-| --- | --- | --- |
-| `0` | `success` | Request succeeded. |
-| `400` | `Missing required parameter: <name>` | A required parameter is missing or invalid. |
-| `401` | `apiKey is null` | API key is missing. |
-| `402` | `apiKey quota is not enough` | API key quota is insufficient. |
-| `429` | `qps limit exceeded` | Request rate exceeded the QPS limit. |
-| `500` | `Internal server error` | Server-side error. |
-
-These status codes and fields are defined by KeyAPI endpoints. The CLI keeps them unchanged.
-
-For HTTP status handling, `2xx` responses exit with code `0`. HTTP non-`2xx` responses still print the KeyAPI response, then exit with a non-zero code so scripts and CI can detect failures.
-
-## Usage Workflow
-
-Recommended workflow:
-
-```text
-list platforms -> list endpoint descriptions -> inspect endpoint parameters -> dry-run -> execute
-```
-
-Example:
-
-```powershell
-keyapi spec list-platforms
-keyapi spec list-endpoints tiktok
-keyapi schema tiktok/influencer/detail
-keyapi call "/v1/tiktok/influencer/detail?unique_id=mrbeast" --dry-run
-keyapi call "/v1/tiktok/influencer/detail?unique_id=mrbeast"
-```
-
-Workflow rules:
-
-- Choose endpoints by reading `method`, `path`, `summary`, and `description`.
-- Inspect `parameters` and `body_fields` before constructing a request.
-- For GET endpoints, put query parameters in the endpoint path, for example `"/v1/google/search?q=openai&gl=us"`.
-- Use `--params "k=v"` or `--query "k=v"` when query parameters need to be appended separately.
-- Use `--body-json` for JSON request bodies.
-- Use `--body-raw` for raw text request bodies.
-- Use `--output "path"` when the response body is large or should be saved for later processing.
-- Use `--dry-run` before execution when request construction is uncertain.
-- Use `docs/reference/cli-spec.yaml` as the lightweight machine-readable command contract when integrating the CLI into other tools.
+Use `--params "k=v"` or `--query "k=v"` when query parameters are easier to append programmatically.
 
 ## Documentation
 
-| File | Purpose                                        |
-| --- |------------------------------------------------|
-| [docs/index.md](https://github.com/EchoSell/keyapi-cli/blob/main/docs/index.md) | Documentation entry point.                     |
-| [docs/commands.md](https://github.com/EchoSell/keyapi-cli/blob/main/docs/commands.md) | Full command and parameter reference.          |
-| [docs/config.md](https://github.com/EchoSell/keyapi-cli/blob/main/docs/config.md) | Config file and environment variables.         |
-| [docs/reference/cli-spec.yaml](https://github.com/EchoSell/keyapi-cli/blob/main/docs/reference/cli-spec.yaml) | Lightweight machine-readable CLI contract.     |
-| [README.zh.md](https://github.com/EchoSell/keyapi-cli/blob/main/README.zh.md) | 中文 README。    |
-| [docs/zh/index.md](https://github.com/EchoSell/keyapi-cli/blob/main/docs/zh/index.md) | 中文文档入口。       |
-| [docs/commands.md](https://github.com/EchoSell/keyapi-cli/blob/main/docs/zh/commands.md) | 中文完整命令和参数参考。  |
-| [docs/config.md](https://github.com/EchoSell/keyapi-cli/blob/main/docs/zh/config.md) | 中文配置文件和环境变量。    |
+`docs/` contains usage documentation for installing, configuring, and using the CLI. The CLI help output is the primary built-in reference for command usage.
+
+| File | Purpose |
+| --- | --- |
+| [docs/index.md](https://github.com/EchoSell/keyapi-cli/blob/main/docs/index.md) | Documentation entry point. |
+| [docs/commands.md](https://github.com/EchoSell/keyapi-cli/blob/main/docs/commands.md) | Full command and parameter reference. |
+| [docs/config.md](https://github.com/EchoSell/keyapi-cli/blob/main/docs/config.md) | Config file and environment variables. |
+| [README.zh.md](https://github.com/EchoSell/keyapi-cli/blob/main/README.zh.md) | Chinese README. |
+| [docs/zh/index.md](https://github.com/EchoSell/keyapi-cli/blob/main/docs/zh/index.md) | Chinese documentation entry point. |

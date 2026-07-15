@@ -4,3 +4,5 @@ keyapi
 keyapi.exe
 .idea
 dist/
+.agents/
+skills/

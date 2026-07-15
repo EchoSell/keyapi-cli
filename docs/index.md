@@ -2,6 +2,10 @@
 
 KeyAPI CLI is a small command line tool for configuring a KeyAPI token, discovering API endpoints, inspecting endpoint parameters, and executing requests.
 
+## Documentation Scope
+
+`docs/` is the human-facing documentation for installing, configuring, and using the CLI. The CLI also provides built-in command usage through `--help`, which is suitable for scripts and agents that need to inspect command behavior directly.
+
 ## Command Groups
 
 | Command | Purpose |
@@ -22,8 +26,6 @@ KeyAPI CLI is a small command line tool for configuring a KeyAPI token, discover
 | --- | --- |
 | [commands.md](commands.md) | Full command reference with arguments, flags, return values, and JSON field meanings. |
 | [config.md](config.md) | Configuration file and environment variables. |
-| [commands.zh.md](commands.zh.md) | Chinese command guide. |
-| [reference/cli-spec.yaml](reference/cli-spec.yaml) | Lightweight machine-readable command contract. |
 
 ## Recommended Workflow
 

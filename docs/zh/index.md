@@ -2,6 +2,10 @@
 
 KeyAPI CLI 是一个小型命令行工具，用于配置 KeyAPI token、发现 API 接口、查看接口参数并执行请求。
 
+## 文档范围
+
+`docs/` 是面向人类用户的文档，用于说明 CLI 的安装、配置和使用方式。CLI 也通过 `--help` 提供内置命令说明，适合脚本和 Agent 直接读取命令行为。
+
 ## 命令组
 
 | 命令 | 作用 |
@@ -22,7 +26,6 @@ KeyAPI CLI 是一个小型命令行工具，用于配置 KeyAPI token、发现 A
 | --- | --- |
 | [commands.md](commands.md) | 完整命令参考，包含参数、flags、返回值和 JSON 字段含义。 |
 | [config.md](config.md) | 配置文件和环境变量说明。 |
-| [../reference/cli-spec.yaml](../reference/cli-spec.yaml) | 轻量机器可读命令契约，仅维护英文版。 |
 
 ## 推荐流程
 
