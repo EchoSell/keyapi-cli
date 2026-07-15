@@ -45,7 +45,7 @@ keyapi --help
 如果你希望 AI 助手帮你安装 release 二进制文件，可以将下面的提示词复制给 Claude Code、Codex、Cursor、Trae 等工具：
 
 ```text
-请从 https://github.com/EchoSell/keyapi-cli/releases 下载并安装适用于当前系统的最新 KeyAPI CLI，完成可执行文件配置，使其可通过 keyapi 命令直接调用，并执行 keyapi --help 验证安装是否成功。
+请从 https://github.com/EchoSell/keyapi-cli/releases 下载并安装适用于当前系统的最新 KeyAPI CLI，完成可执行文件配置，使其可通过 `keyapi` 命令直接调用，并执行 `keyapi --version` 验证安装是否成功。
 ```
 
 ### 从源码构建
@@ -72,7 +72,7 @@ go build -buildvcs=false -o keyapi .
 如果你希望 AI 助手帮你从源码构建，可以将下面的提示词复制给 Claude Code、Codex、Cursor、Trae 等工具：
 
 ```text
-请从源码安装 KeyAPI CLI：https://github.com/EchoSell/keyapi-cli.git，编译生成适用于当前系统的可执行文件，并配置为可通过 `keyapi` 命令直接调用，最后执行 `keyapi --help` 验证安装结果。
+请从源码安装 KeyAPI CLI：https://github.com/EchoSell/keyapi-cli.git，编译生成适用于当前系统的可执行文件，并配置为可通过 `keyapi` 命令直接调用，最后执行 `keyapi --version` 验证安装结果。
 ```
 
 构建完成后，继续查看下面的 PATH 配置说明。
