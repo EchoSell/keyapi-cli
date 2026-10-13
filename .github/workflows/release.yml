@@ -140,7 +140,7 @@ jobs:
           mkdir -p npm-dist
           npm pack --pack-destination npm-dist
           for package_dir in npm-packages/*; do
-            npm pack "$package_dir" --pack-destination npm-dist
+            npm pack "./$package_dir" --pack-destination npm-dist
           done
 
       - name: Upload npm package tarballs
