@@ -2,17 +2,23 @@
 const { spawnSync } = require('node:child_process');
 const path = require('node:path');
 
-const { binaryNameForPlatform } = require('../scripts/platform');
+const {
+  binaryNameForPlatform,
+  packageNameForPlatform,
+} = require('../scripts/platform');
 
 function resolveBinaryPath(options = {}) {
   const env = options.env || process.env;
   const platform = options.platform || process.platform;
+  const arch = options.arch || process.arch;
+  const resolve = options.resolve || require.resolve;
 
   if (env.KEYAPI_CLI_BINARY) {
     return env.KEYAPI_CLI_BINARY;
   }
 
-  return path.join(__dirname, 'native', binaryNameForPlatform({ platform }));
+  const packageName = packageNameForPlatform({ platform, arch });
+  return resolve(path.join(packageName, 'bin', binaryNameForPlatform({ platform })));
 }
 
 function main() {
@@ -23,7 +29,7 @@ function main() {
 
   if (result.error) {
     console.error(`Failed to start KeyAPI CLI: ${result.error.message}`);
-    console.error('Try reinstalling the npm package, or set KEYAPI_CLI_BINARY.');
+    console.error('Try reinstalling keyapi-cli, or set KEYAPI_CLI_BINARY.');
     process.exit(1);
   }
 

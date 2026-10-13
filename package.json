@@ -1,6 +1,6 @@
 {
   "name": "keyapi-cli",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "KeyAPI CLI for discovering endpoint schemas and calling KeyAPI APIs.",
   "license": "MIT",
   "repository": {
@@ -17,8 +17,15 @@
     "README.zh.md"
   ],
   "scripts": {
-    "postinstall": "node scripts/install.js",
+    "prepare-platform-packages": "node scripts/prepare-platform-packages.js",
     "test": "node --test test/*.test.js"
+  },
+  "optionalDependencies": {
+    "keyapi-cli-darwin-arm64": "1.0.2",
+    "keyapi-cli-darwin-x64": "1.0.2",
+    "keyapi-cli-linux-arm64": "1.0.2",
+    "keyapi-cli-linux-x64": "1.0.2",
+    "keyapi-cli-win32-x64": "1.0.2"
   },
   "keywords": [
     "keyapi",

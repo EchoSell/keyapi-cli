@@ -1,10 +1,12 @@
 .gocache/
+.tmp-go-cache/
 .tmp-keyapi-home*/
 keyapi
 keyapi.exe
 .idea
 dist/
 npm/native/
+npm-packages/*/bin/
 node_modules/
 .npm-cache/
 .agents/

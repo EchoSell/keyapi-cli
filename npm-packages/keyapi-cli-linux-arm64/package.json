@@ -1,0 +1,15 @@
+{
+  "name": "keyapi-cli-linux-arm64",
+  "version": "1.0.2",
+  "description": "Linux arm64 binary for keyapi-cli.",
+  "license": "MIT",
+  "os": [
+    "linux"
+  ],
+  "cpu": [
+    "arm64"
+  ],
+  "files": [
+    "bin"
+  ]
+}

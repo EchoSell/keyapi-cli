@@ -110,3 +110,41 @@ jobs:
         with:
           files: dist/*
           generate_release_notes: true
+
+  pack-npm:
+    name: Pack npm packages
+    needs: release
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/v')
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Download binaries
+        uses: actions/download-artifact@v4
+        with:
+          path: dist
+          merge-multiple: true
+
+      - name: Prepare platform packages
+        run: npm run prepare-platform-packages
+
+      - name: Pack packages
+        shell: bash
+        run: |
+          mkdir -p npm-dist
+          npm pack --pack-destination npm-dist
+          for package_dir in npm-packages/*; do
+            npm pack "$package_dir" --pack-destination npm-dist
+          done
+
+      - name: Upload npm package tarballs
+        uses: actions/upload-artifact@v4
+        with:
+          name: npm-packages
+          path: npm-dist/*.tgz

@@ -9,6 +9,11 @@ const archByArch = {
   arm64: 'arm64',
 };
 
+const npmArchByArch = {
+  x64: 'x64',
+  arm64: 'arm64',
+};
+
 function targetForPlatform(options = {}) {
   const platform = options.platform || process.platform;
   const arch = options.arch || process.arch;
@@ -37,8 +42,21 @@ function binaryNameForPlatform(options = {}) {
   return platform === 'win32' ? 'keyapi.exe' : 'keyapi';
 }
 
+function packageNameForPlatform(options = {}) {
+  const platform = options.platform || process.platform;
+  const arch = options.arch || process.arch;
+  const npmArch = npmArchByArch[arch];
+
+  if (!npmArch || !osByPlatform[platform]) {
+    throw new Error(`Unsupported platform: ${platform}/${arch}`);
+  }
+
+  return `keyapi-cli-${platform}-${npmArch}`;
+}
+
 module.exports = {
   assetNameForPlatform,
   binaryNameForPlatform,
+  packageNameForPlatform,
   targetForPlatform,
 };

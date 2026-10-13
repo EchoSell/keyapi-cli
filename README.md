@@ -33,84 +33,17 @@ The CLI reads the latest KeyAPI OpenAPI documentation when endpoint details are 
 
 ## Installation
 
-### Install with npm
-
-Requires Node.js 18 or later. The npm package installs the matching KeyAPI
-binary for your operating system from GitHub Releases:
+Requires Node.js 18 or later:
 
 ```bash
-npm install -g @echosell/keyapi-cli
+npm install -g keyapi-cli
 keyapi --help
+keyapi --version
 ```
 
-If you already have a KeyAPI binary, set `KEYAPI_CLI_BINARY` to its path before
-running `keyapi`.
-
-### Install from Release
-
-1. Open the [GitHub Releases](https://github.com/EchoSell/keyapi-cli/releases) page.
-2. Download the binary for your operating system.
-```powershell
-cd ~/keyapi-cli
-keyapi --help
-```
-
-Copy this prompt into an AI assistant such as Claude Code, Codex, Cursor, or Trae if you want it to install the release binary for you:
-
-```text
-Install the latest KeyAPI CLI from https://github.com/EchoSell/keyapi-cli/releases by downloading the binary for the current platform, configuring it so the `keyapi` command is available from the terminal, and verifying the installation with `keyapi --version`.
-```
-
-### Build from Source
-
-Requires Go `v1.22` or later.
-
-Clone the repository and build the executable:
-
-```powershell
-git clone https://github.com/EchoSell/keyapi-cli.git
-cd keyapi-cli
-go build -buildvcs=false -o keyapi.exe .
-```
-
-On Linux or macOS, build with:
-
-```bash
-git clone https://github.com/EchoSell/keyapi-cli.git
-cd keyapi-cli
-go build -buildvcs=false -o keyapi .
-```
-
-
-Copy this prompt into an AI assistant such as Claude Code, Codex, Cursor, or Trae if you want it to build the project from source:
-
-```text
-Install KeyAPI CLI from source: https://github.com/EchoSell/keyapi-cli.git. Build an executable for the current system, configure it so the `keyapi` command is available from the terminal, and verify the installation by running `keyapi --version`.
-```
-
-After building, continue with the PATH setup section below.
-
-### Make keyapi available on PATH
-
-After installing or building the binary, place it in a directory that is available on `PATH`.
-
-Windows example:
-
-```powershell
-# Example: keyapi.exe is stored in C:\Tools\keyapi
-$env:Path += ";C:\Tools\keyapi"
-keyapi --help
-```
-
-The command above only updates the current PowerShell session. For permanent use, add the directory to the system or user `PATH` environment variable.
-
-Linux or macOS example:
-
-```bash
-chmod +x keyapi
-sudo mv keyapi /usr/local/bin/keyapi
-keyapi --help
-```
+The npm package installs a small JavaScript launcher plus the matching native
+KeyAPI binary package for your operating system. If you already have a custom
+KeyAPI binary, set `KEYAPI_CLI_BINARY` to its path before running `keyapi`.
 
 ## Quick Start
 
