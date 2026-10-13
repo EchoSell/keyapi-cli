@@ -1,0 +1,32 @@
+{
+  "name": "@echosell/keyapi-cli",
+  "version": "1.0.1",
+  "description": "KeyAPI CLI for discovering endpoint schemas and calling KeyAPI APIs.",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/EchoSell/keyapi-cli.git"
+  },
+  "bin": {
+    "keyapi": "npm/keyapi.js"
+  },
+  "files": [
+    "npm",
+    "scripts",
+    "README.md",
+    "README.zh.md"
+  ],
+  "scripts": {
+    "postinstall": "node scripts/install.js",
+    "test": "node --test test/*.test.js"
+  },
+  "keywords": [
+    "keyapi",
+    "cli",
+    "api",
+    "openapi"
+  ],
+  "engines": {
+    "node": ">=18"
+  }
+}

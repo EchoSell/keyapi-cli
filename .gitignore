@@ -4,6 +4,9 @@ keyapi
 keyapi.exe
 .idea
 dist/
+npm/native/
+node_modules/
+.npm-cache/
 .agents/
 skills/
 /cmd.md

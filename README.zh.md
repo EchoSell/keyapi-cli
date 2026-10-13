@@ -33,6 +33,19 @@ CLI 会在请求接口详情时读取最新的 KeyAPI OpenAPI 文档，使接口
 
 ## 安装
 
+### 使用 npm 安装
+
+需要 Node.js 18 或更高版本。npm 包会从 GitHub Releases 下载适合当前
+操作系统的 KeyAPI 二进制文件：
+
+```bash
+npm install -g @echosell/keyapi-cli
+keyapi --help
+```
+
+如果你已经有可用的 KeyAPI 二进制文件，可以在运行 `keyapi` 前设置
+`KEYAPI_CLI_BINARY` 指向该文件路径。
+
 ### 从 Release 安装
 
 1. 打开 [GitHub Releases](https://github.com/EchoSell/keyapi-cli/releases) 页面。

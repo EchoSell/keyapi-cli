@@ -33,6 +33,19 @@ The CLI reads the latest KeyAPI OpenAPI documentation when endpoint details are 
 
 ## Installation
 
+### Install with npm
+
+Requires Node.js 18 or later. The npm package installs the matching KeyAPI
+binary for your operating system from GitHub Releases:
+
+```bash
+npm install -g @echosell/keyapi-cli
+keyapi --help
+```
+
+If you already have a KeyAPI binary, set `KEYAPI_CLI_BINARY` to its path before
+running `keyapi`.
+
 ### Install from Release
 
 1. Open the [GitHub Releases](https://github.com/EchoSell/keyapi-cli/releases) page.
