@@ -3,7 +3,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 
 const targets = [
-  { goos: 'windows', goarch: 'amd64', packageName: 'keyapi-cli-win32-x64', binaryName: 'keyapi.exe' },
+  { goos: 'windows', goarch: 'amd64', packageName: 'keyapi-cli-windows-x64', binaryName: 'keyapi.exe' },
   { goos: 'linux', goarch: 'amd64', packageName: 'keyapi-cli-linux-x64', binaryName: 'keyapi' },
   { goos: 'linux', goarch: 'arm64', packageName: 'keyapi-cli-linux-arm64', binaryName: 'keyapi' },
   { goos: 'darwin', goarch: 'amd64', packageName: 'keyapi-cli-darwin-x64', binaryName: 'keyapi' },

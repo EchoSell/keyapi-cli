@@ -51,6 +51,10 @@ function packageNameForPlatform(options = {}) {
     throw new Error(`Unsupported platform: ${platform}/${arch}`);
   }
 
+  if (platform === 'win32') {
+    return `keyapi-cli-windows-${npmArch}`;
+  }
+
   return `keyapi-cli-${platform}-${npmArch}`;
 }
 

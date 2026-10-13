@@ -43,14 +43,14 @@ test('resolveBinaryPath honors KEYAPI_CLI_BINARY override', () => {
 });
 
 test('packageNameForPlatform returns npm platform package names', () => {
-  assert.equal(packageNameForPlatform({ platform: 'win32', arch: 'x64' }), 'keyapi-cli-win32-x64');
+  assert.equal(packageNameForPlatform({ platform: 'win32', arch: 'x64' }), 'keyapi-cli-windows-x64');
   assert.equal(packageNameForPlatform({ platform: 'darwin', arch: 'arm64' }), 'keyapi-cli-darwin-arm64');
   assert.equal(packageNameForPlatform({ platform: 'linux', arch: 'x64' }), 'keyapi-cli-linux-x64');
 });
 
 test('resolveBinaryPath resolves the binary from the platform package', () => {
   const calls = [];
-  const resolved = path.join('/npm', 'node_modules', 'keyapi-cli-win32-x64', 'bin', 'keyapi.exe');
+  const resolved = path.join('/npm', 'node_modules', 'keyapi-cli-windows-x64', 'bin', 'keyapi.exe');
 
   assert.equal(
     resolveBinaryPath({
@@ -64,7 +64,7 @@ test('resolveBinaryPath resolves the binary from the platform package', () => {
     }),
     resolved,
   );
-  assert.deepEqual(calls, [path.join('keyapi-cli-win32-x64', 'bin', binaryNameForPlatform({ platform: 'win32' }))]);
+  assert.deepEqual(calls, [path.join('keyapi-cli-windows-x64', 'bin', binaryNameForPlatform({ platform: 'win32' }))]);
 });
 
 test('preparePlatformPackages copies built binaries into platform packages', () => {

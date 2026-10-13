@@ -2,7 +2,7 @@ package cli
 
 import "fmt"
 
-const version = "KeyAPI 1.0.2"
+const version = "KeyAPI 1.0.3"
 
 func printRootHelp() {
 	fmt.Println(`KeyAPI CLI

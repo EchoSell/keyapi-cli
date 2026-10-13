@@ -1,5 +1,5 @@
 {
-  "name": "keyapi-cli-win32-x64",
+  "name": "keyapi-cli-windows-x64",
   "version": "1.0.2",
   "description": "Windows x64 binary for keyapi-cli.",
   "license": "MIT",
