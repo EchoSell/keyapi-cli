@@ -1,5 +1,5 @@
 {
-  "name": "@echosell/keyapi-cli",
+  "name": "keyapi-cli",
   "version": "1.0.1",
   "description": "KeyAPI CLI for discovering endpoint schemas and calling KeyAPI APIs.",
   "license": "MIT",
