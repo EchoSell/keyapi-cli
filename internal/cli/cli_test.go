@@ -210,7 +210,7 @@ func TestCallOutputWritesRelativePathFromWorkingDirectory(t *testing.T) {
 
 	writeCallTestConfig(t, server.URL)
 	wd := t.TempDir()
-	t.Chdir(wd)
+	chdir(t, wd)
 
 	err := runCall([]string{"google/search", "--output", filepath.Join("result", "google.json")})
 	if err != nil {
@@ -238,7 +238,7 @@ func TestCallOutputWritesNon2xxResponseBeforeReturningError(t *testing.T) {
 
 	writeCallTestConfig(t, server.URL)
 	wd := t.TempDir()
-	t.Chdir(wd)
+	chdir(t, wd)
 
 	err := runCall([]string{"google/search", "--output", "error.json"})
 	if err == nil {
@@ -303,4 +303,21 @@ func writeCallTestConfig(t *testing.T, baseURL string) {
 func strconvQuote(value string) string {
 	raw, _ := json.Marshal(value)
 	return string(raw)
+}
+
+func chdir(t *testing.T, dir string) {
+	t.Helper()
+
+	previous, err := os.Getwd()
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err := os.Chdir(dir); err != nil {
+		t.Fatal(err)
+	}
+	t.Cleanup(func() {
+		if err := os.Chdir(previous); err != nil {
+			t.Fatal(err)
+		}
+	})
 }
